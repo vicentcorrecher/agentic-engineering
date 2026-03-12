@@ -2,438 +2,994 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Ingeniería Agéntica</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700&family=DM+Sans:wght@300;400;500&display=swap');
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --bg: #0a0a0a;
-  --bg2: #111;
-  --bg3: #1a1a1a;
-  --border: rgba(255,255,255,0.08);
-  --border2: rgba(255,255,255,0.15);
-  --text: #f0f0f0;
-  --muted: #888;
-  --accent: #e8e0ff;
-  --accent2: #7c6fcd;
-  --green: #4ade80;
-  --amber: #fbbf24;
-  --blue: #60a5fa;
-  --coral: #f87171;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#0d0d0d;--ink2:#1c1c1c;--ink3:#2e2e2e;
+  --dust:#f5f3ee;--dust2:#ede9e1;--dust3:#e0dbd0;
+  --paper:#faf9f6;
+  --muted:#8a8680;--hint:#b5b0a8;
+  --g:#3d9a6e;--a:#c9762a;--b:#2e6db4;--r:#b83a3a;--p:#6b4fa8;
+  --serif:'Fraunces',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+  --safe-bottom:env(safe-area-inset-bottom,0px);
 }
 
-html, body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  font-size: 16px;
-  line-height: 1.5;
-  min-height: 100vh;
-  overflow-x: hidden;
+html{scroll-behavior:smooth;}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:var(--sans);font-size:16px;line-height:1.55;
+  min-height:100vh;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
 }
 
-.nav-wrap {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(10,10,10,0.9);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border);
-  padding: 10px 16px;
-  display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  scrollbar-width: none;
+/* ── SCROLL SNAP CONTAINER ── */
+.app{
+  height:100dvh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+  scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;
 }
-.nav-wrap::-webkit-scrollbar { display: none; }
+.app::-webkit-scrollbar{display:none;}
 
-.pill {
-  flex-shrink: 0;
-  font-family: 'Inter', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  padding: 6px 14px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-.pill.active { background: #fff; color: #000; border-color: #fff; }
-
-.slide { display: none; animation: up 0.3s ease; }
-.slide.on { display: block; }
-@keyframes up { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-
-.cover {
-  min-height: calc(100vh - 53px);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 40px 20px 32px;
+/* ── EACH SECTION ── */
+section{
+  scroll-snap-align:start;
+  min-height:100dvh;
+  display:flex;flex-direction:column;
+  position:relative;
+  overflow:hidden;
 }
 
-.cover-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 32px;
+/* ── PROGRESS DOTS ── */
+.dots{
+  position:fixed;right:16px;top:50%;
+  transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:7px;
+  z-index:200;
 }
-.cover-tag span {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--green);
-  animation: pulse 2s infinite;
+.dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--dust3);
+  transition:all 0.35s cubic-bezier(.4,0,.2,1);
+  cursor:pointer;
 }
-@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
-
-.cover-title {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(2.8rem, 12vw, 5rem);
-  font-weight: 800;
-  line-height: 0.95;
-  letter-spacing: -0.02em;
-  color: #fff;
-  margin-bottom: 24px;
-}
-.cover-title em {
-  font-style: normal;
-  color: transparent;
-  -webkit-text-stroke: 1.5px rgba(255,255,255,0.4);
+.dot.on{
+  background:var(--ink);
+  height:20px;border-radius:3px;
 }
 
-.cover-sub {
-  font-size: 15px;
-  color: var(--muted);
-  line-height: 1.6;
-  max-width: 320px;
-  margin-bottom: 40px;
+/* ── SECTION COUNTER ── */
+.sec-num{
+  font-family:var(--sans);font-size:10px;font-weight:500;
+  letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--hint);
 }
 
-.cover-cards { display: flex; flex-direction: column; gap: 8px; }
-.ccard {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 14px 16px;
-  cursor: pointer;
-  transition: all 0.2s;
+/* ══════════════════════════════
+   SECTION 0 — PORTADA
+══════════════════════════════ */
+#s0{background:var(--ink);justify-content:flex-end;padding:0;}
+
+.cover-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 70% 20%, #1e1a30 0%, transparent 60%),
+             radial-gradient(ellipse 60% 50% at 10% 80%, #0e2215 0%, transparent 55%),
+             var(--ink);
 }
-.ccard:active { transform: scale(0.98); background: var(--bg3); }
-.ccard-num { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; color: var(--muted); min-width: 24px; }
-.ccard-info { flex: 1; }
-.ccard-title { font-size: 14px; font-weight: 500; color: #fff; line-height: 1.3; }
-.ccard-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
-.ccard-arrow { color: var(--muted); font-size: 16px; }
+.cover-grain{
+  position:absolute;inset:0;opacity:0.035;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size:200px;
+}
 
-.section { padding: 32px 20px; display: flex; flex-direction: column; gap: 20px; }
-.section-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
-.section-title { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; line-height: 1.15; color: #fff; }
+.cover-content{
+  position:relative;z-index:1;
+  padding:0 28px calc(56px + var(--safe-bottom));
+  display:flex;flex-direction:column;gap:0;
+}
 
-.compare { display: flex; flex-direction: column; gap: 3px; }
-.compare-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
-.compare-box.new-way { background: var(--bg3); border-color: rgba(255,255,255,0.2); }
-.compare-head { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-.compare-main { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 12px; }
-.compare-item { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--muted); padding: 5px 0; border-bottom: 1px solid var(--border); line-height: 1.4; }
-.compare-item:last-child { border-bottom: none; }
-.compare-item .dot2 { width: 4px; height: 4px; border-radius: 50%; background: var(--muted); margin-top: 6px; flex-shrink: 0; }
-.new-way .compare-item { color: #ccc; }
-.new-way .dot2 { background: var(--accent2); }
+.cover-eyebrow{
+  font-family:var(--sans);font-size:11px;font-weight:500;
+  letter-spacing:0.2em;text-transform:uppercase;
+  color:rgba(255,255,255,0.35);
+  margin-bottom:20px;
+  display:flex;align-items:center;gap:8px;
+}
+.cover-eyebrow::before{
+  content:'';display:block;width:20px;height:1px;background:rgba(255,255,255,0.25);
+}
 
-.vs-divider { display: flex; align-items: center; justify-content: center; padding: 4px 0; }
-.vs-badge { font-size: 11px; font-weight: 500; color: var(--muted); background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; }
+.cover-h{
+  font-family:var(--serif);font-weight:900;
+  font-size:clamp(3.2rem,14vw,5.5rem);
+  line-height:0.9;letter-spacing:-0.02em;
+  color:#fff;margin-bottom:10px;
+}
+.cover-h span{
+  font-style:italic;font-weight:300;
+  color:rgba(255,255,255,0.45);
+  display:block;
+}
 
-.flow-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
-.flow-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
-.flow-steps { display: flex; flex-direction: column; gap: 0; }
-.flow-step { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
-.flow-step:last-child { border-bottom: none; }
-.flow-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.flow-step-text { font-size: 13px; color: #ccc; }
-.flow-step-tool { margin-left: auto; font-size: 11px; color: var(--muted); background: var(--bg3); border-radius: 6px; padding: 3px 8px; }
+.cover-rule{width:40px;height:1px;background:rgba(255,255,255,0.15);margin:24px 0;}
 
-.screens-wrap { display: flex; flex-direction: column; gap: 10px; }
-.screen-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
-.sc-topbar { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--border); }
-.sc-dot { width: 8px; height: 8px; border-radius: 50%; }
-.sc-name { font-size: 12px; font-weight: 500; margin-left: 4px; }
-.sc-status { margin-left: auto; font-size: 10px; padding: 3px 8px; border-radius: 10px; font-weight: 500; }
-.status-working { background: rgba(251,191,36,0.15); color: var(--amber); }
-.status-done { background: rgba(74,222,128,0.12); color: var(--green); }
-.sc-body { padding: 14px; }
-.sc-task { font-size: 13px; color: var(--muted); margin-bottom: 10px; font-style: italic; }
-.sc-bar { height: 3px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
-.sc-fill { height: 100%; border-radius: 2px; }
-.center-note { text-align: center; padding: 12px 0; }
-.center-note p { font-size: 13px; color: var(--muted); line-height: 1.5; }
-.center-note strong { color: #fff; }
+.cover-sub{
+  font-size:15px;font-weight:300;
+  color:rgba(255,255,255,0.5);
+  line-height:1.65;max-width:300px;
+  margin-bottom:40px;
+}
 
-.types-list { display: flex; flex-direction: column; gap: 8px; }
-.type-item { display: flex; align-items: center; gap: 16px; background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
-.type-icon-wrap { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
-.type-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 2px; }
-.type-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
-.type-tag { margin-left: auto; font-size: 10px; font-weight: 500; padding: 4px 9px; border-radius: 8px; white-space: nowrap; align-self: flex-start; }
+.cover-menu{display:flex;flex-direction:column;gap:1px;}
+.cover-item{
+  display:flex;align-items:center;gap:16px;
+  padding:14px 0;
+  border-top:1px solid rgba(255,255,255,0.06);
+  cursor:pointer;transition:opacity 0.2s;
+}
+.cover-item:active{opacity:0.6;}
+.ci-n{
+  font-family:var(--serif);font-size:11px;
+  color:rgba(255,255,255,0.2);
+  min-width:20px;
+}
+.ci-t{
+  font-family:var(--sans);font-size:14px;font-weight:400;
+  color:rgba(255,255,255,0.75);flex:1;
+}
+.ci-arr{color:rgba(255,255,255,0.2);font-size:14px;}
 
-.example-flow { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
-.ef-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
-.ef-step { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); }
-.ef-step:last-child { border-bottom: none; }
-.ef-role { font-size: 11px; font-weight: 500; min-width: 72px; }
-.ef-action { font-size: 13px; color: var(--muted); }
+/* ══════════════════════════════
+   SECTION 1 — EL CAMBIO
+══════════════════════════════ */
+#s1{background:var(--dust);padding:60px 28px 40px;}
 
-.techie-hero { background: var(--bg2); border: 1px solid var(--border2); border-radius: 16px; padding: 20px; position: relative; overflow: hidden; }
-.techie-hero::before { content: ''; position: absolute; top: -40px; right: -40px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(124,111,205,0.3) 0%, transparent 70%); pointer-events: none; }
-.th-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--accent2); background: rgba(124,111,205,0.1); border: 1px solid rgba(124,111,205,0.3); border-radius: 20px; padding: 4px 12px; margin-bottom: 14px; }
-.th-title { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 6px; }
-.th-sub { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.5; }
-.th-feats { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.th-feat { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 10px 12px; border: 1px solid var(--border); }
-.th-feat-title { font-size: 12px; font-weight: 500; color: var(--accent); margin-bottom: 2px; }
-.th-feat-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+.s1-header{margin-bottom:36px;}
+.s1-kicker{
+  font-family:var(--sans);font-size:10px;font-weight:500;
+  letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:14px;
+}
+.s1-h{
+  font-family:var(--serif);font-weight:700;
+  font-size:clamp(2rem,8vw,3rem);
+  line-height:1.05;letter-spacing:-0.01em;color:var(--ink);
+}
+.s1-h em{font-style:italic;font-weight:300;}
 
-.auto-grid { display: flex; flex-direction: column; gap: 8px; }
-.auto-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
-.auto-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-.auto-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-.auto-name { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: #fff; }
-.auto-level { font-size: 11px; color: var(--muted); }
-.auto-item { font-size: 12px; color: var(--muted); padding-left: 12px; border-left: 2px solid var(--border); line-height: 1.4; margin-bottom: 5px; }
+.compare-table{
+  background:#fff;
+  border-radius:16px;
+  overflow:hidden;
+  border:1px solid var(--dust3);
+  margin-bottom:20px;
+}
+.ct-row{
+  display:grid;grid-template-columns:1fr 1fr;
+}
+.ct-head{
+  padding:14px 16px;
+  font-size:10px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--muted);
+}
+.ct-head:first-child{border-right:1px solid var(--dust3);}
+.ct-body{display:contents;}
+.ct-cell{
+  padding:12px 16px;
+  font-size:13px;color:var(--ink3);line-height:1.45;
+  border-top:1px solid var(--dust3);
+}
+.ct-cell:first-child{
+  border-right:1px solid var(--dust3);
+  color:var(--muted);
+}
+.ct-cell.new{color:var(--ink);font-weight:500;}
 
-.bottom-nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 32px; }
-.arrow-btn { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--muted); background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; cursor: pointer; transition: all 0.2s; }
-.arrow-btn:active { transform: scale(0.97); color: #fff; }
-.arrow-btn:disabled { opacity: 0.3; pointer-events: none; }
-.slide-counter { font-size: 12px; color: var(--muted); }
+.callout{
+  background:var(--ink);
+  border-radius:14px;
+  padding:18px 20px;
+  display:flex;gap:14px;align-items:flex-start;
+}
+.callout-icon{font-size:18px;margin-top:1px;flex-shrink:0;}
+.callout-text{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.6;}
+.callout-text strong{color:#fff;font-weight:500;}
+
+/* ══════════════════════════════
+   SECTION 2 — PANTALLAS
+══════════════════════════════ */
+#s2{background:var(--paper);padding:60px 28px 40px;}
+
+.s2-h{
+  font-family:var(--serif);font-weight:700;
+  font-size:clamp(1.9rem,7.5vw,2.8rem);
+  line-height:1.05;letter-spacing:-0.01em;
+  color:var(--ink);margin-bottom:8px;
+}
+.s2-h em{font-style:italic;font-weight:300;}
+.s2-sub{font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.5;}
+
+.mock-screen{
+  background:var(--ink2);
+  border-radius:16px;overflow:hidden;
+  margin-bottom:10px;
+  border:1px solid rgba(0,0,0,0.08);
+}
+.ms-bar{
+  display:flex;align-items:center;gap:5px;
+  padding:9px 12px;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.ms-dot{width:7px;height:7px;border-radius:50%;}
+.ms-title{
+  margin-left:6px;font-size:11px;font-weight:500;
+  flex:1;
+}
+.ms-badge{
+  font-size:10px;font-weight:500;
+  padding:2px 8px;border-radius:8px;
+}
+.badge-busy{background:rgba(201,118,42,0.18);color:#e8942e;}
+.badge-ok{background:rgba(61,154,110,0.15);color:#3d9a6e;}
+.ms-body{padding:12px 14px;}
+.ms-msg{font-size:12px;color:rgba(255,255,255,0.4);font-style:italic;margin-bottom:8px;}
+.ms-bar-track{height:2px;background:rgba(255,255,255,0.06);border-radius:1px;overflow:hidden;}
+.ms-bar-fill{height:100%;border-radius:1px;}
+.ms-tags{display:flex;gap:5px;flex-wrap:wrap;}
+.ms-tag{font-size:10px;padding:3px 8px;border-radius:6px;font-weight:500;}
+
+.you-node{
+  background:var(--ink);color:#fff;
+  border-radius:12px;padding:14px 18px;
+  display:flex;align-items:center;gap:12px;
+  margin-top:4px;
+}
+.yn-icon{font-size:20px;}
+.yn-text{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.45;}
+.yn-text strong{color:#fff;}
+
+/* ══════════════════════════════
+   SECTION 3 — 5 AGENTES
+══════════════════════════════ */
+#s3{background:var(--dust);padding:60px 28px 40px;}
+
+.s3-h{
+  font-family:var(--serif);font-weight:700;
+  font-size:clamp(1.9rem,7.5vw,2.8rem);
+  line-height:1.05;letter-spacing:-0.01em;color:var(--ink);margin-bottom:28px;
+}
+.s3-h em{font-style:italic;font-weight:300;}
+
+.agents{display:flex;flex-direction:column;gap:1px;margin-bottom:20px;}
+.agent-row{
+  background:#fff;
+  padding:16px 18px;
+  display:flex;align-items:center;gap:14px;
+  cursor:default;
+  transition:background 0.15s;
+}
+.agent-row:first-child{border-radius:14px 14px 0 0;}
+.agent-row:last-child{border-radius:0 0 14px 14px;}
+.ar-icon{
+  width:40px;height:40px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.ar-name{
+  font-family:var(--serif);font-size:16px;font-weight:700;
+  color:var(--ink);
+}
+.ar-desc{font-size:12px;color:var(--muted);line-height:1.4;margin-top:1px;}
+.ar-tag{
+  margin-left:auto;
+  font-size:10px;font-weight:500;
+  padding:4px 10px;border-radius:8px;
+  white-space:nowrap;align-self:flex-start;
+  flex-shrink:0;
+}
+
+.flow-visual{
+  background:#fff;border-radius:14px;
+  padding:18px 20px;
+  border:1px solid var(--dust3);
+}
+.fv-label{
+  font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--hint);margin-bottom:14px;
+}
+.fv-chain{display:flex;flex-direction:column;gap:0;}
+.fv-step{
+  display:flex;align-items:center;gap:12px;
+  padding:9px 0;
+  border-bottom:1px solid var(--dust3);
+}
+.fv-step:last-child{border-bottom:none;}
+.fv-role{
+  font-family:var(--sans);font-size:11px;font-weight:500;
+  min-width:76px;
+}
+.fv-action{font-size:13px;color:var(--muted);}
+.fv-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+
+/* ══════════════════════════════
+   SECTION 4 — TECHIE
+══════════════════════════════ */
+#s4{background:var(--ink);padding:60px 28px 40px;}
+
+.s4-h{
+  font-family:var(--serif);font-weight:700;
+  font-size:clamp(1.9rem,7.5vw,2.8rem);
+  line-height:1.05;letter-spacing:-0.01em;
+  color:#fff;margin-bottom:6px;
+}
+.s4-h em{font-style:italic;font-weight:300;color:rgba(255,255,255,0.35);}
+.s4-sub{font-size:14px;color:rgba(255,255,255,0.35);margin-bottom:28px;}
+
+.tool-hero{
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:16px;padding:20px;margin-bottom:10px;
+  position:relative;overflow:hidden;
+}
+.tool-hero::after{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:160px;height:160px;
+  background:radial-gradient(circle, rgba(107,79,168,0.3) 0%, transparent 65%);
+  pointer-events:none;
+}
+.th-tag{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:500;
+  color:rgba(167,139,250,0.9);
+  background:rgba(107,79,168,0.15);
+  border:1px solid rgba(107,79,168,0.25);
+  border-radius:20px;padding:3px 10px;margin-bottom:12px;
+}
+.th-name{
+  font-family:var(--serif);font-size:1.5rem;font-weight:700;
+  color:#fff;margin-bottom:4px;
+}
+.th-desc{font-size:13px;color:rgba(255,255,255,0.4);line-height:1.5;margin-bottom:16px;}
+.th-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.th-feat{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:10px;padding:10px;
+}
+.th-ft{font-size:11px;font-weight:500;color:rgba(255,255,255,0.7);margin-bottom:2px;}
+.th-fd{font-size:11px;color:rgba(255,255,255,0.3);line-height:1.4;}
+
+.tool-cards{display:flex;flex-direction:column;gap:8px;}
+.tool-card{
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:14px;padding:16px;
+  display:flex;gap:14px;align-items:flex-start;
+}
+.tc-icon{
+  width:36px;height:36px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+  background:rgba(255,255,255,0.05);
+}
+.tc-name{font-family:var(--serif);font-size:15px;font-weight:700;color:#fff;margin-bottom:2px;}
+.tc-level{font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:8px;}
+.tc-items{display:flex;flex-direction:column;gap:4px;}
+.tc-item{
+  font-size:12px;color:rgba(255,255,255,0.35);
+  padding-left:10px;border-left:1.5px solid rgba(255,255,255,0.08);
+  line-height:1.4;
+}
+
+/* ══════════════════════════════
+   SECTION 5 — GUÍA
+══════════════════════════════ */
+#s5{background:var(--paper);padding:60px 28px calc(40px + var(--safe-bottom));}
+
+.s5-h{
+  font-family:var(--serif);font-weight:700;
+  font-size:clamp(1.9rem,7.5vw,2.8rem);
+  line-height:1.05;letter-spacing:-0.01em;color:var(--ink);margin-bottom:6px;
+}
+.s5-h em{font-style:italic;font-weight:300;}
+.s5-sub{font-size:14px;color:var(--muted);margin-bottom:24px;}
+
+.profile-row{
+  display:flex;gap:6px;overflow-x:auto;
+  scrollbar-width:none;margin-bottom:20px;
+}
+.profile-row::-webkit-scrollbar{display:none;}
+.ptab{
+  flex-shrink:0;
+  font-family:var(--sans);font-size:12px;font-weight:500;
+  padding:7px 16px;border-radius:20px;
+  border:1.5px solid var(--dust3);
+  background:transparent;color:var(--muted);
+  cursor:pointer;transition:all 0.2s;
+}
+.ptab.on{
+  background:var(--ink);color:#fff;border-color:var(--ink);
+}
+
+.prog-bar-wrap{
+  background:var(--dust2);border-radius:12px;
+  padding:14px 16px;margin-bottom:14px;
+}
+.pbw-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.pbw-label{font-size:12px;color:var(--muted);}
+.pbw-count{
+  font-family:var(--serif);font-size:14px;font-weight:700;color:var(--ink);
+}
+.pbw-track{height:3px;background:var(--dust3);border-radius:2px;overflow:hidden;}
+.pbw-fill{height:100%;background:var(--g);border-radius:2px;transition:width 0.4s ease;}
+
+.steps{display:flex;flex-direction:column;gap:8px;}
+.step{
+  display:flex;gap:14px;
+  background:#fff;border-radius:14px;
+  padding:16px;border:1.5px solid var(--dust3);
+  cursor:pointer;
+  transition:border-color 0.2s, background 0.2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.step.done{
+  border-color:rgba(61,154,110,0.3);
+  background:rgba(61,154,110,0.03);
+}
+.step:active{transform:scale(0.99);}
+
+.step-num{
+  width:30px;height:30px;border-radius:50%;
+  border:1.5px solid var(--dust3);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:12px;font-weight:700;
+  color:var(--hint);flex-shrink:0;
+  transition:all 0.25s;
+}
+.step.done .step-num{
+  background:rgba(61,154,110,0.12);
+  border-color:rgba(61,154,110,0.35);
+  color:var(--g);
+}
+.step-body{flex:1;min-width:0;}
+.step-title{
+  font-size:14px;font-weight:500;color:var(--ink);
+  line-height:1.35;margin-bottom:4px;
+  transition:color 0.2s;
+}
+.step.done .step-title{color:var(--hint);text-decoration:line-through;text-decoration-color:var(--dust3);}
+.step-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+.step-tool{
+  display:inline-block;
+  font-size:10px;font-weight:500;
+  padding:3px 9px;border-radius:7px;
+  margin-top:7px;
+}
+
+.panel{display:none;}
+.panel.on{display:block;}
+
+/* ── SWIPE HINT ── */
+.swipe-hint{
+  position:fixed;bottom:calc(20px + var(--safe-bottom));left:50%;
+  transform:translateX(-50%);
+  font-size:11px;color:var(--hint);
+  display:flex;align-items:center;gap:6px;
+  opacity:1;transition:opacity 0.5s;
+  pointer-events:none;z-index:100;
+}
+.swipe-hint.hide{opacity:0;}
+.sh-arrow{animation:bob 1.4s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(4px);}}
 </style>
 </head>
 <body>
 
-<div class="nav-wrap" id="nav"></div>
+<!-- NAV DOTS -->
+<nav class="dots" id="dots"></nav>
 
-<div id="slides">
-  <div class="slide on" id="s0">
-    <div class="cover">
-      <div>
-        <div class="cover-tag"><span></span>Para personas no técnicas</div>
-        <div class="cover-title">Ingeniería<br><em>Agéntica</em></div>
-        <p class="cover-sub">No se trata de automatizaciones complejas. Se trata de tener un equipo digital trabajando en paralelo mientras tú decides.</p>
-      </div>
-      <div class="cover-cards">
-        <div class="ccard" onclick="goTo(1)"><div class="ccard-num">01</div><div class="ccard-info"><div class="ccard-title">El cambio mental</div><div class="ccard-sub">De usar IA a orquestar IA</div></div><div class="ccard-arrow">→</div></div>
-        <div class="ccard" onclick="goTo(2)"><div class="ccard-num">02</div><div class="ccard-info"><div class="ccard-title">Trabajar en paralelo</div><div class="ccard-sub">Varias pantallas, tú supervisas</div></div><div class="ccard-arrow">→</div></div>
-        <div class="ccard" onclick="goTo(3)"><div class="ccard-num">03</div><div class="ccard-info"><div class="ccard-title">Los 5 tipos de agente</div><div class="ccard-sub">Roles que usan las mejores empresas</div></div><div class="ccard-arrow">→</div></div>
-        <div class="ccard" onclick="goTo(4)"><div class="ccard-num">04</div><div class="ccard-info"><div class="ccard-title">Nivel techie</div><div class="ccard-sub">Claude Code, n8n, Make, Zapier</div></div><div class="ccard-arrow">→</div></div>
-      </div>
-    </div>
-    <div class="bottom-nav">
-      <button class="arrow-btn" disabled>← Anterior</button>
-      <span class="slide-counter">1 / 5</span>
-      <button class="arrow-btn" onclick="next()">Siguiente →</button>
-    </div>
-  </div>
-
-  <div class="slide" id="s1">
-    <div class="section">
-      <div class="section-label">01 — El cambio mental</div>
-      <div class="section-title">De usar IA a dirigir<br>un equipo de IA</div>
-      <div class="compare">
-        <div class="compare-box">
-          <div class="compare-head">Antes</div>
-          <div class="compare-main">Usas el software para trabajar</div>
-          <div class="compare-item"><div class="dot2"></div>Abres ChatGPT → preguntas → copias</div>
-          <div class="compare-item"><div class="dot2"></div>Una tarea, una respuesta</div>
-          <div class="compare-item"><div class="dot2"></div>Tú haces el trabajo, la IA te ayuda</div>
-          <div class="compare-item"><div class="dot2"></div>Todo secuencial, uno tras otro</div>
-        </div>
-        <div class="vs-divider"><div class="vs-badge">vs</div></div>
-        <div class="compare-box new-way">
-          <div class="compare-head">Ingeniería agéntica</div>
-          <div class="compare-main">Diseñas sistemas que trabajan contigo</div>
-          <div class="compare-item"><div class="dot2"></div>Varias IAs en paralelo, cada una con rol</div>
-          <div class="compare-item"><div class="dot2"></div>Tú apruebas, ellas ejecutan</div>
-          <div class="compare-item"><div class="dot2"></div>La IA hace el trabajo, tú decides</div>
-          <div class="compare-item"><div class="dot2"></div>Todo simultáneo a la vez</div>
-        </div>
-      </div>
-      <div class="flow-card">
-        <div class="flow-label">Ejemplo real — tu jornada</div>
-        <div class="flow-steps">
-          <div class="flow-step"><div class="flow-dot" style="background:var(--blue);"></div><div class="flow-step-text">Chrome descarga los informes del portal</div><div class="flow-step-tool">Chrome</div></div>
-          <div class="flow-step"><div class="flow-dot" style="background:var(--green);"></div><div class="flow-step-text">Gemini redacta emails al cliente</div><div class="flow-step-tool">Gemini</div></div>
-          <div class="flow-step"><div class="flow-dot" style="background:var(--accent2);"></div><div class="flow-step-text">Claude monta el Excel y el Word</div><div class="flow-step-tool">Claude</div></div>
-          <div class="flow-step"><div class="flow-dot" style="background:var(--amber);"></div><div class="flow-step-text">Tú solo revisas y das al clic</div><div class="flow-step-tool" style="color:var(--amber);">Tú</div></div>
-        </div>
-      </div>
-    </div>
-    <div class="bottom-nav">
-      <button class="arrow-btn" onclick="prev()">← Anterior</button>
-      <span class="slide-counter">2 / 5</span>
-      <button class="arrow-btn" onclick="next()">Siguiente →</button>
-    </div>
-  </div>
-
-  <div class="slide" id="s2">
-    <div class="section">
-      <div class="section-label">02 — Trabajar en paralelo</div>
-      <div class="section-title">Tu equipo digital,<br>trabajando a la vez</div>
-      <div class="screens-wrap">
-        <div class="screen-card">
-          <div class="sc-topbar">
-            <div class="sc-dot" style="background:#E24B4A;"></div><div class="sc-dot" style="background:#fbbf24;"></div><div class="sc-dot" style="background:#4ade80;"></div>
-            <div class="sc-name" style="color:var(--blue);">Claude for Chrome</div>
-            <div class="sc-status status-working">Trabajando...</div>
-          </div>
-          <div class="sc-body">
-            <div class="sc-task">"Descargando informes PDF del portal corporativo..."</div>
-            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:5px;"><span>Progreso</span><span>65%</span></div>
-            <div class="sc-bar"><div class="sc-fill" style="width:65%;background:var(--blue);"></div></div>
-          </div>
-        </div>
-        <div class="screen-card">
-          <div class="sc-topbar">
-            <div class="sc-dot" style="background:#E24B4A;"></div><div class="sc-dot" style="background:#fbbf24;"></div><div class="sc-dot" style="background:#4ade80;"></div>
-            <div class="sc-name" style="color:var(--green);">Gemini Gem</div>
-            <div class="sc-status status-working">Redactando...</div>
-          </div>
-          <div class="sc-body">
-            <div class="sc-task">"Estimado Juan, en respuesta a su consulta sobre..."</div>
-            <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
-              <span style="font-size:11px;padding:3px 9px;background:rgba(74,222,128,0.08);color:var(--green);border-radius:6px;border:1px solid rgba(74,222,128,0.2);">Email 1 ✓</span>
-              <span style="font-size:11px;padding:3px 9px;background:rgba(74,222,128,0.08);color:var(--green);border-radius:6px;border:1px solid rgba(74,222,128,0.2);">Email 2 ✓</span>
-              <span style="font-size:11px;padding:3px 9px;background:rgba(251,191,36,0.08);color:var(--amber);border-radius:6px;border:1px solid rgba(251,191,36,0.2);">Email 3...</span>
-            </div>
-          </div>
-        </div>
-        <div class="screen-card">
-          <div class="sc-topbar">
-            <div class="sc-dot" style="background:#E24B4A;"></div><div class="sc-dot" style="background:#fbbf24;"></div><div class="sc-dot" style="background:#4ade80;"></div>
-            <div class="sc-name" style="color:var(--accent2);">Claude web</div>
-            <div class="sc-status status-done">Listo ✓</div>
-          </div>
-          <div class="sc-body">
-            <div class="sc-task">"Informe de ventas Q1 generado y listo para revisar"</div>
-            <div style="margin-top:8px;display:flex;gap:6px;">
-              <span style="font-size:11px;padding:3px 9px;background:rgba(74,222,128,0.08);color:var(--green);border-radius:6px;border:1px solid rgba(74,222,128,0.2);">Word.docx ✓</span>
-              <span style="font-size:11px;padding:3px 9px;background:rgba(74,222,128,0.08);color:var(--green);border-radius:6px;border:1px solid rgba(74,222,128,0.2);">Excel.xlsx ✓</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="center-note"><p>Los tres trabajan al mismo tiempo.<br>Tú solo <strong>supervisas y apruebas</strong>.</p></div>
-    </div>
-    <div class="bottom-nav">
-      <button class="arrow-btn" onclick="prev()">← Anterior</button>
-      <span class="slide-counter">3 / 5</span>
-      <button class="arrow-btn" onclick="next()">Siguiente →</button>
-    </div>
-  </div>
-
-  <div class="slide" id="s3">
-    <div class="section">
-      <div class="section-label">03 — Los 5 tipos de agente</div>
-      <div class="section-title">Los roles que usan<br>las mejores empresas</div>
-      <div class="types-list">
-        <div class="type-item"><div class="type-icon-wrap" style="background:rgba(96,165,250,0.12);">🔍</div><div class="type-text"><div class="type-name">Researcher</div><div class="type-desc">Busca, filtra y sintetiza información de cualquier fuente</div></div><div class="type-tag" style="background:rgba(96,165,250,0.1);color:var(--blue);">Investiga</div></div>
-        <div class="type-item"><div class="type-icon-wrap" style="background:rgba(251,191,36,0.1);">🗺</div><div class="type-text"><div class="type-name">Planner</div><div class="type-desc">Diseña el plan y divide el trabajo en pasos ejecutables</div></div><div class="type-tag" style="background:rgba(251,191,36,0.1);color:var(--amber);">Planifica</div></div>
-        <div class="type-item"><div class="type-icon-wrap" style="background:rgba(74,222,128,0.1);">⚡</div><div class="type-text"><div class="type-name">Executor</div><div class="type-desc">Ejecuta las tareas concretas: escribe, genera, publica</div></div><div class="type-tag" style="background:rgba(74,222,128,0.1);color:var(--green);">Ejecuta</div></div>
-        <div class="type-item"><div class="type-icon-wrap" style="background:rgba(248,113,113,0.1);">🔎</div><div class="type-text"><div class="type-name">Critic</div><div class="type-desc">Revisa, detecta errores y mejora el resultado final</div></div><div class="type-tag" style="background:rgba(248,113,113,0.1);color:var(--coral);">Revisa</div></div>
-        <div class="type-item"><div class="type-icon-wrap" style="background:rgba(232,224,255,0.08);">🔧</div><div class="type-text"><div class="type-name">Operator</div><div class="type-desc">Conecta apps, mueve datos, acciona el sistema</div></div><div class="type-tag" style="background:rgba(232,224,255,0.08);color:var(--accent);">Conecta</div></div>
-      </div>
-      <div class="example-flow">
-        <div class="ef-label">Ejemplo — publicar un artículo</div>
-        <div class="ef-step"><div class="ef-role" style="color:var(--blue);">Researcher</div><div class="ef-action">Busca tendencias del tema</div></div>
-        <div class="ef-step"><div class="ef-role" style="color:var(--amber);">Planner</div><div class="ef-action">Estructura el artículo</div></div>
-        <div class="ef-step"><div class="ef-role" style="color:var(--green);">Executor</div><div class="ef-action">Redacta el contenido</div></div>
-        <div class="ef-step"><div class="ef-role" style="color:var(--coral);">Critic</div><div class="ef-action">Revisa tono y errores</div></div>
-        <div class="ef-step"><div class="ef-role" style="color:var(--accent);">Operator</div><div class="ef-action">Publica automáticamente</div></div>
-      </div>
-    </div>
-    <div class="bottom-nav">
-      <button class="arrow-btn" onclick="prev()">← Anterior</button>
-      <span class="slide-counter">4 / 5</span>
-      <button class="arrow-btn" onclick="next()">Siguiente →</button>
-    </div>
-  </div>
-
-  <div class="slide" id="s4">
-    <div class="section">
-      <div class="section-label">04 — Nivel techie</div>
-      <div class="section-title">Para los que quieren<br>ir más lejos</div>
-      <div class="techie-hero">
-        <div class="th-badge">★ Más potente</div>
-        <div class="th-title">Claude Code</div>
-        <div class="th-sub">El agente más potente para trabajo técnico. Funciona desde la terminal y actúa de forma autónoma.</div>
-        <div class="th-feats">
-          <div class="th-feat"><div class="th-feat-title">Crea proyectos enteros</div><div class="th-feat-desc">Escribe, testea y despliega código desde un prompt</div></div>
-          <div class="th-feat"><div class="th-feat-title">Lee tu código</div><div class="th-feat-desc">Entiende tu base de código y la modifica directamente</div></div>
-          <div class="th-feat"><div class="th-feat-title">Ejecuta en terminal</div><div class="th-feat-desc">Instala dependencias, gestiona archivos, corre comandos</div></div>
-          <div class="th-feat"><div class="th-feat-title">Agente autónomo</div><div class="th-feat-desc">Planifica, ejecuta y corrige errores solo</div></div>
-        </div>
-      </div>
-      <div class="auto-grid">
-        <div class="auto-card">
-          <div class="auto-head"><div class="auto-icon" style="background:rgba(139,92,246,0.15);">⚙️</div><div><div class="auto-name">n8n</div><div class="auto-level">Máximo control — self-hosted</div></div></div>
-          <div class="auto-item">Flujos visuales sin límite de personalización</div>
-          <div class="auto-item">Puedes escribir código JavaScript dentro</div>
-          <div class="auto-item">Tus datos, tu servidor, tu control total</div>
-          <div class="auto-item">Conecta Claude, APIs propias y bases de datos</div>
-        </div>
-        <div class="auto-card">
-          <div class="auto-head"><div class="auto-icon" style="background:rgba(251,191,36,0.1);">🔗</div><div><div class="auto-name">Zapier / Make</div><div class="auto-level">Sin código, rápido de montar</div></div></div>
-          <div class="auto-item">Zapier — más apps, más fácil de usar</div>
-          <div class="auto-item">Make — más potente, flujos visuales complejos</div>
-          <div class="auto-item">Conectan IA con Gmail, Slack, Notion, CRM...</div>
-          <div class="auto-item">Ejemplo: email entra → IA resume → CRM</div>
-        </div>
-      </div>
-    </div>
-    <div class="bottom-nav">
-      <button class="arrow-btn" onclick="prev()">← Anterior</button>
-      <span class="slide-counter">5 / 5</span>
-      <button class="arrow-btn" disabled>Siguiente →</button>
-    </div>
-  </div>
+<!-- SWIPE HINT -->
+<div class="swipe-hint" id="hint">
+  <span class="sh-arrow">↓</span> Desliza para explorar
 </div>
 
+<div class="app" id="app">
+
+<!-- ══ S0: PORTADA ══ -->
+<section id="s0">
+  <div class="cover-bg"></div>
+  <div class="cover-grain"></div>
+  <div class="cover-content">
+    <div class="cover-eyebrow">Guía práctica · 2025</div>
+    <div class="cover-h">
+      Ingeniería<br>
+      <span>Agéntica</span>
+    </div>
+    <div class="cover-rule"></div>
+    <p class="cover-sub">Un equipo digital trabajando en paralelo mientras tú decides. Sin código. Sin complicaciones.</p>
+    <div class="cover-menu">
+      <div class="cover-item" onclick="scrollTo(1)">
+        <span class="ci-n">I</span><span class="ci-t">El cambio mental</span><span class="ci-arr">→</span>
+      </div>
+      <div class="cover-item" onclick="scrollTo(2)">
+        <span class="ci-n">II</span><span class="ci-t">Trabajar en paralelo</span><span class="ci-arr">→</span>
+      </div>
+      <div class="cover-item" onclick="scrollTo(3)">
+        <span class="ci-n">III</span><span class="ci-t">Los 5 tipos de agente</span><span class="ci-arr">→</span>
+      </div>
+      <div class="cover-item" onclick="scrollTo(4)">
+        <span class="ci-n">IV</span><span class="ci-t">Nivel techie</span><span class="ci-arr">→</span>
+      </div>
+      <div class="cover-item" onclick="scrollTo(5)">
+        <span class="ci-n">V</span><span class="ci-t">Tu guía para empezar</span><span class="ci-arr">→</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S1: EL CAMBIO ══ -->
+<section id="s1">
+  <div class="s1-header">
+    <div class="s1-kicker">I — El cambio mental</div>
+    <div class="s1-h">De usar IA<br>a <em>dirigir</em> IA</div>
+  </div>
+
+  <div class="compare-table">
+    <div class="ct-row">
+      <div class="ct-head">Antes</div>
+      <div class="ct-head">Ahora</div>
+    </div>
+    <div class="ct-row">
+      <div class="ct-cell">Abres una IA, preguntas, copias</div>
+      <div class="ct-cell new">Varias IAs trabajando a la vez</div>
+    </div>
+    <div class="ct-row">
+      <div class="ct-cell">Una tarea, una respuesta</div>
+      <div class="ct-cell new">Tú apruebas, ellas ejecutan</div>
+    </div>
+    <div class="ct-row">
+      <div class="ct-cell">Tú haces, la IA ayuda</div>
+      <div class="ct-cell new">La IA hace, tú decides</div>
+    </div>
+    <div class="ct-row">
+      <div class="ct-cell">Todo secuencial</div>
+      <div class="ct-cell new">Todo simultáneo</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text">
+      <strong>El ordenador deja de ser una herramienta.</strong> Se convierte en un equipo digital que trabaja mientras tú tomas las decisiones importantes.
+    </div>
+  </div>
+</section>
+
+<!-- ══ S2: PANTALLAS ══ -->
+<section id="s2">
+  <div class="sec-num">II — Trabajar en paralelo</div>
+  <div class="s2-h">Tres pantallas,<br><em>tres agentes</em></div>
+  <p class="s2-sub">Esto es ingeniería agéntica en el día a día. Sin automatizaciones. Sin código.</p>
+
+  <div class="mock-screen">
+    <div class="ms-bar">
+      <div class="ms-dot" style="background:#ff5f57;"></div>
+      <div class="ms-dot" style="background:#febc2e;"></div>
+      <div class="ms-dot" style="background:#28c840;"></div>
+      <div class="ms-title" style="color:#60a5fa;">Claude for Chrome</div>
+      <div class="ms-badge badge-busy">Trabajando</div>
+    </div>
+    <div class="ms-body">
+      <div class="ms-msg">"Descargando informes PDF del portal..."</div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,0.25);margin-bottom:5px;"><span>Progreso</span><span>65%</span></div>
+      <div class="ms-bar-track"><div class="ms-bar-fill" style="width:65%;background:#60a5fa;"></div></div>
+    </div>
+  </div>
+
+  <div class="mock-screen">
+    <div class="ms-bar">
+      <div class="ms-dot" style="background:#ff5f57;"></div>
+      <div class="ms-dot" style="background:#febc2e;"></div>
+      <div class="ms-dot" style="background:#28c840;"></div>
+      <div class="ms-title" style="color:#4ade80;">Gemini Gem</div>
+      <div class="ms-badge badge-busy">Redactando</div>
+    </div>
+    <div class="ms-body">
+      <div class="ms-msg">"Estimado Juan, en respuesta a..."</div>
+      <div class="ms-tags">
+        <div class="ms-tag" style="background:rgba(74,222,128,0.1);color:#4ade80;">Email 1 ✓</div>
+        <div class="ms-tag" style="background:rgba(74,222,128,0.1);color:#4ade80;">Email 2 ✓</div>
+        <div class="ms-tag" style="background:rgba(251,191,36,0.1);color:#fbbf24;">Email 3...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mock-screen">
+    <div class="ms-bar">
+      <div class="ms-dot" style="background:#ff5f57;"></div>
+      <div class="ms-dot" style="background:#febc2e;"></div>
+      <div class="ms-dot" style="background:#28c840;"></div>
+      <div class="ms-title" style="color:#c084fc;">Claude web</div>
+      <div class="ms-badge badge-ok">Listo ✓</div>
+    </div>
+    <div class="ms-body">
+      <div class="ms-msg">"Informe Q1 generado y listo para revisar"</div>
+      <div class="ms-tags">
+        <div class="ms-tag" style="background:rgba(74,222,128,0.1);color:#4ade80;">Word.docx ✓</div>
+        <div class="ms-tag" style="background:rgba(74,222,128,0.1);color:#4ade80;">Excel.xlsx ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="you-node">
+    <div class="yn-icon">🧠</div>
+    <div class="yn-text">Los tres trabajan a la vez. <strong>Tú solo supervisas y apruebas.</strong> Eso es todo.</div>
+  </div>
+</section>
+
+<!-- ══ S3: 5 AGENTES ══ -->
+<section id="s3">
+  <div class="sec-num">III — Los 5 tipos de agente</div>
+  <div class="s3-h">Los roles que usan<br>las <em>mejores empresas</em></div>
+
+  <div class="agents">
+    <div class="agent-row">
+      <div class="ar-icon" style="background:#dbeafe;">🔍</div>
+      <div><div class="ar-name">Researcher</div><div class="ar-desc">Busca, filtra y sintetiza información</div></div>
+      <div class="ar-tag" style="background:#dbeafe;color:#1e40af;">Investiga</div>
+    </div>
+    <div class="agent-row">
+      <div class="ar-icon" style="background:#fef3c7;">🗺</div>
+      <div><div class="ar-name">Planner</div><div class="ar-desc">Diseña el plan y divide el trabajo</div></div>
+      <div class="ar-tag" style="background:#fef3c7;color:#92400e;">Planifica</div>
+    </div>
+    <div class="agent-row">
+      <div class="ar-icon" style="background:#dcfce7;">⚡</div>
+      <div><div class="ar-name">Executor</div><div class="ar-desc">Escribe, genera y publica</div></div>
+      <div class="ar-tag" style="background:#dcfce7;color:#166534;">Ejecuta</div>
+    </div>
+    <div class="agent-row">
+      <div class="ar-icon" style="background:#fee2e2;">🔎</div>
+      <div><div class="ar-name">Critic</div><div class="ar-desc">Revisa errores y mejora el resultado</div></div>
+      <div class="ar-tag" style="background:#fee2e2;color:#991b1b;">Revisa</div>
+    </div>
+    <div class="agent-row">
+      <div class="ar-icon" style="background:#ede9fe;">🔧</div>
+      <div><div class="ar-name">Operator</div><div class="ar-desc">Conecta apps y mueve datos</div></div>
+      <div class="ar-tag" style="background:#ede9fe;color:#5b21b6;">Conecta</div>
+    </div>
+  </div>
+
+  <div class="flow-visual">
+    <div class="fv-label">Ejemplo — publicar un artículo</div>
+    <div class="fv-chain">
+      <div class="fv-step"><div class="fv-dot" style="background:var(--b);"></div><div class="fv-role" style="color:var(--b);">Researcher</div><div class="fv-action">Busca tendencias</div></div>
+      <div class="fv-step"><div class="fv-dot" style="background:var(--a);"></div><div class="fv-role" style="color:var(--a);">Planner</div><div class="fv-action">Estructura el artículo</div></div>
+      <div class="fv-step"><div class="fv-dot" style="background:var(--g);"></div><div class="fv-role" style="color:var(--g);">Executor</div><div class="fv-action">Redacta el contenido</div></div>
+      <div class="fv-step"><div class="fv-dot" style="background:var(--r);"></div><div class="fv-role" style="color:var(--r);">Critic</div><div class="fv-action">Revisa tono y errores</div></div>
+      <div class="fv-step"><div class="fv-dot" style="background:var(--p);"></div><div class="fv-role" style="color:var(--p);">Operator</div><div class="fv-action">Publica automáticamente</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S4: TECHIE ══ -->
+<section id="s4">
+  <div class="sec-num" style="color:rgba(255,255,255,0.25);">IV — Nivel techie</div>
+  <div class="s4-h">Para los que<br>quieren ir <em>más lejos</em></div>
+  <p class="s4-sub">Herramientas para quienes quieren potencia real.</p>
+
+  <div class="tool-hero">
+    <div class="th-tag">★ Más potente</div>
+    <div class="th-name">Claude Code</div>
+    <div class="th-desc">Agente autónomo desde la terminal. Crea, edita y despliega proyectos completos solo.</div>
+    <div class="th-grid">
+      <div class="th-feat"><div class="th-ft">Proyectos enteros</div><div class="th-fd">Escribe y despliega desde un prompt</div></div>
+      <div class="th-feat"><div class="th-ft">Lee tu código</div><div class="th-fd">Entiende y modifica directamente</div></div>
+      <div class="th-feat"><div class="th-ft">Terminal real</div><div class="th-fd">Instala, corre comandos, gestiona</div></div>
+      <div class="th-feat"><div class="th-ft">Autónomo</div><div class="th-fd">Planifica, ejecuta y corrige solo</div></div>
+    </div>
+  </div>
+
+  <div class="tool-cards">
+    <div class="tool-card">
+      <div class="tc-icon">⚙️</div>
+      <div>
+        <div class="tc-name">n8n</div>
+        <div class="tc-level">Máximo control · self-hosted</div>
+        <div class="tc-items">
+          <div class="tc-item">Flujos visuales sin límites</div>
+          <div class="tc-item">JavaScript dentro del flujo</div>
+          <div class="tc-item">Tus datos, tu servidor</div>
+        </div>
+      </div>
+    </div>
+    <div class="tool-card">
+      <div class="tc-icon">🔗</div>
+      <div>
+        <div class="tc-name">Zapier / Make</div>
+        <div class="tc-level">Sin código · rápido de montar</div>
+        <div class="tc-items">
+          <div class="tc-item">Conectan IA con Gmail, Slack, CRM</div>
+          <div class="tc-item">Make — más potente y visual</div>
+          <div class="tc-item">Email entra → IA resume → CRM</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S5: GUÍA ══ -->
+<section id="s5">
+  <div class="sec-num">V — Tu guía para empezar</div>
+  <div class="s5-h">Empieza <em>hoy</em><br>en 10 minutos</div>
+  <p class="s5-sub">Elige tu perfil y marca los pasos.</p>
+
+  <div class="profile-row">
+    <button class="ptab on" onclick="switchP(0,this)">Cualquiera</button>
+    <button class="ptab" onclick="switchP(1,this)">Empresa</button>
+    <button class="ptab" onclick="switchP(2,this)">Freelancer</button>
+    <button class="ptab" onclick="switchP(3,this)">Marketing</button>
+  </div>
+
+  <!-- P0 -->
+  <div class="panel on" id="p0">
+    <div class="prog-bar-wrap">
+      <div class="pbw-top"><span class="pbw-label">Progreso</span><span class="pbw-count" id="c0">0 / 5</span></div>
+      <div class="pbw-track"><div class="pbw-fill" id="f0" style="width:0"></div></div>
+    </div>
+    <div class="steps">
+      <div class="step" onclick="tick(this,'f0','c0',5)">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Instala Claude for Chrome</div>
+          <div class="step-desc">Chrome Web Store → añadir extensión. Gratis, sin configuración.</div>
+          <div class="step-tool" style="background:#dbeafe;color:#1e40af;">Chrome Web Store</div>
+        </div>
+      </div>
+      <div class="step" onclick="tick(this,'f0','c0',5)">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Crea un Proyecto en Claude.ai</div>
+          <div class="step-desc">Guarda contexto permanente. Añade quién eres y qué haces.</div>
+          <div class="step-tool" style="background:#ede9fe;color:#5b21b6;">Claude Projects</div>
+        </div>
+      </div>
+      <div class="step" onclick="tick(this,'f0','c0',5)">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Identifica tu tarea más repetitiva</div>
+          <div class="step-desc">¿Qué haces más de 3 veces por semana? Ese es tu primer agente.</div>
+          <div class="step-tool" style="background:#fef3c7;color:#92400e;">Reflexión</div>
+        </div>
+      </div>
+      <div class="step" onclick="tick(this,'f0','c0',5)">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Configura un Gem en Gemini para emails</div>
+          <div class="step-desc">gemini.google.com → Gems → nuevo Gem con tu tono habitual.</div>
+          <div class="step-tool" style="background:#dcfce7;color:#166534;">Gemini Gems</div>
+        </div>
+      </div>
+      <div class="step" onclick="tick(this,'f0','c0',5)">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Trabaja con 2 pantallas a la vez</div>
+          <div class="step-desc">Claude en una, Gemini en otra. Tareas distintas al mismo tiempo. Bienvenido.</div>
+          <div class="step-tool" style="background:#fee2e2;color:#991b1b;">Primer día</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P1 -->
+  <div class="panel" id="p1">
+    <div class="prog-bar-wrap">
+      <div class="pbw-top"><span class="pbw-label">Progreso</span><span class="pbw-count" id="c1">0 / 5</span></div>
+      <div class="pbw-track"><div class="pbw-fill" id="f1" style="width:0"></div></div>
+    </div>
+    <div class="steps">
+      <div class="step" onclick="tick(this,'f1','c1',5)">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Mapea los flujos repetitivos del equipo</div>
+          <div class="step-desc">Lista las 5 tareas que más tiempo consumen. Son tus primeros candidatos.</div>
+          <div class="step-tool" style="background:#dbeafe;color:#1e40af;">Estrategia</div>
+        </div>
+      </div>
+      <div class="step" onclick="tick(this,'f1','c1',5)">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Crea un Claude Project por departamento</div>
+          <div class="step-desc">Ventas, marketing, ops — cada uno con su contexto y datos propios.</div>
+          <div class="step-tool" style="background:#ede9fe;color:#5b21b6;">Claude Projects</div>
+        </div>
+      </div>
+      <div class="step" onclick="tick(this,'f1','c1',5)">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Conecta Gmail con Make o Zapier</div>
+          <div class="step-desc">Primer flujo: email entra → Claude resume → borrador listo para aprobar.</div>
+          <div class="step-tool" style="background:#fef3c7;color:#92400e;">Make / Zapier</div>
+        </div>
+      </div>
+      <div class="step" onclick="tick(this,'f1','c1',5)">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Designa un supervisor de agentes</div>
+          <div class="step-desc">Alguien que valide outputs antes de que salgan al exterior. La gobernanza es clave.</div>
+          <div class="step-tool" style="background:#dcfce7;color:#166534;">Equipo</div>
+        </div>
+      </div>
+      <div class="step" onclick="tick(this,'f1','c1',5)">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Mide el tiempo ahorrado la primera semana</div>
+          <div class="step-desc">Ese número es tu argumento para escalar el sistema a toda la empresa.</div>
+          <div class="step-tool" style="background:#fee2e2;color:#991b1b;">Métricas</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P2 -->
+  <div class="panel" id="p2">
+    <div class="prog-bar-wrap">
+      <div class="pbw-top"><span class="pbw-label">Progreso</span><span class="pbw-count" id="c2">0 / 5</span></div>
+      <div class="pbw-track"><div class="pbw-fill" id="f2" style="width:0"></div></div>
+    </div>
+    <div class="steps">
+      <div class="step" onclick="tick(this,'f2','c2',5)">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Un Project en Claude por cada cliente</div>
+          <div class="step-desc">Sube briefing, tono y materiales. Claude los recordará siempre.</div>
+          <div class="step-tool" style="background:#ede9fe;color:#5b21b6;">Claude Projects</div>
+        </div>
+      </div>
+      <div class="step" onclick="tick(this,'f2','c2',5)">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Automatiza propuestas y presupuestos</div>
+          <div class="step-desc">Prompt plantilla que genera borradores en 30 segundos desde tus notas.</div>
+          <div class="step-tool" style="background:#dbeafe;color:#1e40af;">Plantillas</div>
+        </div>
+      </div>
+      <div class="step" onclick="tick(this,'f2','c2',5)">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Chrome Agent para investigar clientes</div>
+          <div class="step-desc">Antes de una reunión: navega su web y prepara un briefing de 5 puntos.</div>
+          <div class="step-tool" style="background:#dcfce7;color:#166534;">Chrome Agent</div>
+        </div>
+      </div>
+      <div class="step" onclick="tick(this,'f2','c2',5)">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Delega los informes de seguimiento</div>
+          <div class="step-desc">Notas de la semana → Claude genera el informe para el cliente automáticamente.</div>
+          <div class="step-tool" style="background:#fef3c7;color:#92400e;">Reportes</div>
+        </div>
+      </div>
+      <div class="step" onclick="tick(this,'f2','c2',5)">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Calcula cuántos clientes más puedes gestionar</div>
+          <div class="step-desc">Con el tiempo liberado, estima proyectos adicionales. Ese es el valor real.</div>
+          <div class="step-tool" style="background:#fee2e2;color:#991b1b;">Escalabilidad</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P3 -->
+  <div class="panel" id="p3">
+    <div class="prog-bar-wrap">
+      <div class="pbw-top"><span class="pbw-label">Progreso</span><span class="pbw-count" id="c3">0 / 5</span></div>
+      <div class="pbw-track"><div class="pbw-fill" id="f3" style="width:0"></div></div>
+    </div>
+    <div class="steps">
+      <div class="step" onclick="tick(this,'f3','c3',5)">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Crea tu agente Researcher de tendencias</div>
+          <div class="step-desc">Project en Claude para buscar tendencias semanales y resumirlas en 5 puntos.</div>
+          <div class="step-tool" style="background:#dbeafe;color:#1e40af;">Researcher</div>
+        </div>
+      </div>
+      <div class="step" onclick="tick(this,'f3','c3',5)">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Monta el flujo de contenido en 5 agentes</div>
+          <div class="step-desc">Researcher → Planner → Executor → Critic → Operator. Tú apruebas entre pasos.</div>
+          <div class="step-tool" style="background:#ede9fe;color:#5b21b6;">Sistema</div>
+        </div>
+      </div>
+      <div class="step" onclick="tick(this,'f3','c3',5)">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Conecta tu blog con Make</div>
+          <div class="step-desc">Claude genera → Make formatea → publica en WordPress/LinkedIn automáticamente.</div>
+          <div class="step-tool" style="background:#fef3c7;color:#92400e;">Make</div>
+        </div>
+      </div>
+      <div class="step" onclick="tick(this,'f3','c3',5)">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Gem para adaptar formatos</div>
+          <div class="step-desc">Un artículo largo → hilo de Twitter + post LinkedIn + newsletter. Un input, tres outputs.</div>
+          <div class="step-tool" style="background:#dcfce7;color:#166534;">Gemini Gems</div>
+        </div>
+      </div>
+      <div class="step" onclick="tick(this,'f3','c3',5)">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Mide piezas publicadas antes vs. ahora</div>
+          <div class="step-desc">Ese multiplicador es tu argumento para escalar el sistema.</div>
+          <div class="step-tool" style="background:#fee2e2;color:#991b1b;">Métricas</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+</div><!-- /app -->
+
 <script>
-const slides = ['s0','s1','s2','s3','s4'];
-const labels = ['Inicio','El cambio','Paralelo','5 agentes','Techie'];
-let cur = 0;
-const nav = document.getElementById('nav');
-labels.forEach((l,i) => {
-  const b = document.createElement('button');
-  b.className = 'pill' + (i===0?' active':'');
-  b.textContent = l;
-  b.onclick = () => goTo(i);
-  nav.appendChild(b);
+// DOTS
+const sections = ['s0','s1','s2','s3','s4','s5'];
+const dotsEl = document.getElementById('dots');
+sections.forEach((_,i)=>{
+  const d = document.createElement('div');
+  d.className='dot'+(i===0?' on':'');
+  d.onclick=()=>scrollTo(i);
+  dotsEl.appendChild(d);
 });
-function goTo(n) {
-  document.getElementById(slides[cur]).classList.remove('on');
-  cur = n;
-  document.getElementById(slides[cur]).classList.add('on');
-  document.querySelectorAll('.pill').forEach((p,i) => p.classList.toggle('active', i===cur));
-  window.scrollTo({top:0, behavior:'smooth'});
+
+function scrollTo(i){
+  document.getElementById(sections[i]).scrollIntoView({behavior:'smooth'});
 }
-function next() { if(cur<slides.length-1) goTo(cur+1); }
-function prev() { if(cur>0) goTo(cur-1); }
-document.addEventListener('keydown', e => {
-  if(e.key==='ArrowRight') next();
-  if(e.key==='ArrowLeft') prev();
-});
+
+// Update dots on scroll
+const app = document.getElementById('app');
+const allDots = dotsEl.querySelectorAll('.dot');
+const hint = document.getElementById('hint');
+let hintHidden = false;
+
+app.addEventListener('scroll',()=>{
+  if(!hintHidden){ hint.classList.add('hide'); hintHidden=true; }
+  const h = window.innerHeight;
+  let active = 0;
+  sections.forEach((id,i)=>{
+    const el = document.getElementById(id);
+    const top = el.getBoundingClientRect().top;
+    if(top < h*0.5) active = i;
+  });
+  allDots.forEach((d,i)=>d.classList.toggle('on',i===active));
+},{passive:true});
+
+// PROFILE TABS
+let curP = 0;
+function switchP(n, btn){
+  document.getElementById('p'+curP).classList.remove('on');
+  curP = n;
+  document.getElementById('p'+n).classList.add('on');
+  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+// CHECKLIST
+function tick(el, fillId, countId, total){
+  el.classList.toggle('done');
+  const panel = el.closest('.panel');
+  const done = panel.querySelectorAll('.step.done').length;
+  document.getElementById(countId).textContent = done+' / '+total;
+  document.getElementById(fillId).style.width = (done/total*100)+'%';
+}
 </script>
 </body>
 </html>
