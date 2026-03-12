@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ingeniería Agéntica</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0a0a;
+  --bg2: #111;
+  --bg3: #1a1a1a;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.15);
+  --text: #f0f0f0;
+  --muted: #888;
+  --accent: #e8e0ff;
+  --accent2: #7c6fcd;
+  --green: #4ade80;
+  --amber: #fbbf24;
+  --blue: #60a5fa;
+  --coral: #f87171;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.nav-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10,10,10,0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 16px;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav-wrap::-webkit-scrollbar { display: none; }
+
+.pill {
+  flex-shrink: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.pill.active { background: #fff; color: #000; border-color: #fff; }
+
+.slide { display: none; animation: up 0.3s ease; }
+.slide.on { display: block; }
+@keyframes up { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+.cover {
+  min-height: calc(100vh - 53px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 20px 32px;
+}
+
+.cover-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 32px;
+}
+.cover-tag span {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+.cover-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2.8rem, 12vw, 5rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin-bottom: 24px;
+}
+.cover-title em {
+  font-style: normal;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255,255,255,0.4);
+}
+
+.cover-sub {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 320px;
+  margin-bottom: 40px;
+}
+
+.cover-cards { display: flex; flex-direction: column; gap: 8px; }
+.ccard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ccard:active { transform: scale(0.98); background: var(--bg3); }
+.ccard-num { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; color: var(--muted); min-width: 24px; }
+.ccard-info { flex: 1; }
+.ccard-title { font-size: 14px; font-weight: 500; color: #fff; line-height: 1.3; }
+.ccard-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.ccard-arrow { color: var(--muted); font-size: 16px; }
+
+.section { padding: 32px 20px; display: flex; flex-direction: column; gap: 20px; }
+.section-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+.section-title { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; line-height: 1.15; color: #fff; }
+
+.compare { display: flex; flex-direction: column; gap: 3px; }
+.compare-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+.compare-box.new-way { background: var(--bg3); border-color: rgba(255,255,255,0.2); }
+.compare-head { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.compare-main { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 12px; }
+.compare-item { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--muted); padding: 5px 0; border-bottom: 1px solid var(--border); line-height: 1.4; }
+.compare-item:last-child { border-bottom: none; }
+.compare-item .dot2 { width: 4px; height: 4px; border-radius: 50%; background: var(--muted); margin-top: 6px; flex-shrink: 0; }
+.new-way .compare-item { color: #ccc; }
+.new-way .dot2 { background: var(--accent2); }
+
+.vs-divider { display: flex; align-items: center; justify-content: center; padding: 4px 0; }
+.vs-badge { font-size: 11px; font-weight: 500; color: var(--muted); background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; }
+
+.flow-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+.flow-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+.flow-steps { display: flex; flex-direction: column; gap: 0; }
+.flow-step { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.flow-step:last-child { border-bottom: none; }
+.flow-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.flow-step-text { font-size: 13px; color: #ccc; }
+.flow-step-tool { margin-left: auto; font-size: 11px; color: var(--muted); background: var(--bg3); border-radius: 6px; padding: 3px 8px; }
+
+.screens-wrap { display: flex; flex-direction: column; gap: 10px; }
+.screen-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.sc-topbar { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+.sc-dot { width: 8px; height: 8px; border-radius: 50%; }
+.sc-name { font-size: 12px; font-weight: 500; margin-left: 4px; }
+.sc-status { margin-left: auto; font-size: 10px; padding: 3px 8px; border-radius: 10px; font-weight: 500; }
+.status-working { background: rgba(251,191,36,0.15); color: var(--amber); }
+.status-done { background: rgba(74,222,128,0.12); color: var(--green); }
+.sc-body { padding: 14px; }
+.sc-task { font-size: 13px; color: var(--muted); margin-bottom: 10px; font-style: italic; }
+.sc-bar { height: 3px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
+.sc-fill { height: 100%; border-radius: 2px; }
+.center-note { text-align: center; padding: 12px 0; }
+.center-note p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.center-note strong { color: #fff; }
+
+.types-list { display: flex; flex-direction: column; gap: 8px; }
+.type-item { display: flex; align-items: center; gap: 16px; background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
+.type-icon-wrap { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.type-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+.type-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+.type-tag { margin-left: auto; font-size: 10px; font-weight: 500; padding: 4px 9px; border-radius: 8px; white-space: nowrap; align-self: flex-start; }
+
+.example-flow { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+.ef-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+.ef-step { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+.ef-step:last-child { border-bottom: none; }
+.ef-role { font-size: 11px; font-weight: 500; min-width: 72px; }
+.ef-action { font-size: 13px; color: var(--muted); }
+
+.techie-hero { background: var(--bg2); border: 1px solid var(--border2); border-radius: 16px; padding: 20px; position: relative; overflow: hidden; }
+.techie-hero::before { content: ''; position: absolute; top: -40px; right: -40px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(124,111,205,0.3) 0%, transparent 70%); pointer-events: none; }
+.th-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--accent2); background: rgba(124,111,205,0.1); border: 1px solid rgba(124,111,205,0.3); border-radius: 20px; padding: 4px 12px; margin-bottom: 14px; }
+.th-title { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 6px; }
+.th-sub { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.5; }
+.th-feats { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.th-feat { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 10px 12px; border: 1px solid var(--border); }
+.th-feat-title { font-size: 12px; font-weight: 500; color: var(--accent); margin-bottom: 2px; }
+.th-feat-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+.auto-grid { display: flex; flex-direction: column; gap: 8px; }
+.auto-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
+.auto-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.auto-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.auto-name { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: #fff; }
+.auto-level { font-size: 11px; color: var(--muted); }
+.auto-item { font-size: 12px; color: var(--muted); padding-left: 12px; border-left: 2px solid var(--border); line-height: 1.4; margin-bottom: 5px; }
+
+.bottom-nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 32px; }
+.arrow-btn { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--muted); background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; cursor: pointer; transition: all 0.2s; }
+.arrow-btn:active { transform: scale(0.97); color: #fff; }
+.arrow-btn:disabled { opacity: 0.3; pointer-events: none; }
+.slide-counter { font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="nav-wrap" id="nav"></div>
+
+<div id="slides">
+  <div class="slide on" id="s0">
+    <div class="cover">
+      <div>
+        <div class="cover-tag"><span></span>Para personas no técnicas</div>
+        <div class="cover-title">Ingeniería<br><em>Agéntica</em></div>
+        <p class="cover-sub">No se trata de automatizaciones complejas. Se trata de tener un equipo digital trabajando en paralelo mientras tú decides.</p>
+      </div>
+      <div class="cover-cards">
+        <div class="ccard" onclick="goTo(1)"><div class="ccard-num">01</div><div class="ccard-info"><div class="ccard-title">El cambio mental</div><div class="ccard-sub">De usar IA a orquestar IA</div></div><div class="ccard-arrow">→</div></div>
+        <div class="ccard" onclick="goTo(2)"><div class="ccard-num">02</div><div class="ccard-info"><div class="ccard-title">Trabajar en paralelo</div><div class="ccard-sub">Varias pantallas, tú supervisas</div></div><div class="ccard-arrow">→</div></div>
+        <div class="ccard" onclick="goTo(3)"><div class="ccard-num">03</div><div class="ccard-info"><div class="ccard-title">Los 5 tipos de agente</div><div class="ccard-sub">Roles que usan las mejores empresas</div></div><div class="ccard-arrow">→</div></div>
+        <div class="ccard" onclick="goTo(4)"><div class="ccard-num">04</div><div class="ccard-info"><div class="ccard-title">Nivel techie</div><div class="ccard-sub">Claude Code, n8n, Make, Zapier</div></div><div class="ccard-arrow">→</div></div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <button class="arrow-btn" disabled>← Anterior</button>
+      <span class="slide-counter">1 / 5</span>
+      <button class="arrow-btn" onclick="next()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="slide" id="s1">
+    <div class="section">
+      <div class="section-label">01 — El cambio mental</div>
+      <div class="section-title">De usar IA a dirigir<br>un equipo de IA</div>
+      <div class="compare">
+        <div class="compare-box">
+          <div class="compare-head">Antes</div>
+          <div class="compare-main">Usas el software para trabajar</div>
+          <div class="compare-item"><div class="dot2"></div>Abres ChatGPT → preguntas → copias</div>
+          <div class="compare-item"><div class="dot2"></div>Una tarea, una respuesta</div>
+          <div class="compare-item"><div class="dot2"></div>Tú haces el trabajo, la IA te ayuda</div>
+          <div class="compare-item"><div class="dot2"></div>Todo secuencial, uno tras otro</div>
+        </div>
+        <div class="vs-divider"><div class="vs-badge">vs</div></div>
+        <div class="compare-box new-way">
+          <div class="compare-head">Ingeniería agéntica</div>
+          <div class="compare-main">Diseñas sistemas que trabajan contigo</div>
+          <div class="compare-item"><div class="dot2"></div>Varias IAs en paralelo, cada una con rol</div>
+          <div class="compare-item"><div class="dot2"></div>Tú apruebas, ellas ejecutan</div>
+          <div class="compare-item"><div class="dot2"></div>La IA hace el trabajo, tú decides</div>
+          <div class="compare-item"><div class="dot2"></div>Todo simultáneo a la vez</div>
+        </div>
+      </div>
+      <div class="flow-card">
+        <div class="flow-label">Ejemplo real — tu jornada</div>
+        <div class="flow-steps">
+          <div class="flow-step"><div class="flow-dot" style="background:var(--blue);"></div><div class="flow-step-text">Chrome descarga los informes del portal</div><div class="flow-step-tool">Chrome</div></div>
+          <div class="flow-step"><div class="flow-dot" style="background:var(--green);"></div><div class="flow-step-text">Gemini redacta emails al cliente</div><div class="flow-step-tool">Gemini</div></div>
+          <div class="flow-step"><div class="flow-dot" style="background:var(--accent2);"></div><div class="flow-step-text">Claude monta el Excel y el Word</div><div class="flow-step-tool">Claude</div></div>
+          <div class="flow-step"><div class="flow-dot" style="background:var(--amber);"></div><div class="flow-step-text">Tú solo revisas y das al clic</div><div class="flow-step-tool" style="color:var(--amber);">Tú</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <button class="arrow-btn" onclick="prev()">← Anterior</button>
+      <span class="slide-counter">2 / 5</span>
+      <button class="arrow-btn" onclick="next()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="slide" id="s2">
+    <div class="section">
+      <div class="section-label">02 — Trabajar en paralelo</div>
+      <div class="section-title">Tu equipo digital,<br>trabajando a la vez</div>
+      <div class="screens-wrap">
+        <div class="screen-card">
+          <div class="sc-topbar">
+            <div class="sc-dot" style="background:#E24B4A;"></div><div class="sc-dot" style="background:#fbbf24;"></div><div class="sc-dot" style="background:#4ade80;"></div>
+            <div class="sc-name" style="color:var(--blue);">Claude for Chrome</div>
+            <div class="sc-status status-working">Trabajando...</div>
+          </div>
+          <div class="sc-body">
+            <div class="sc-task">"Descargando informes PDF del portal corporativo..."</div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:5px;"><span>Progreso</span><span>65%</span></div>
+            <div class="sc-bar"><div class="sc-fill" style="width:65%;background:var(--blue);"></div></div>
+          </div>
+        </div>
+        <div class="screen-card">
+          <div class="sc-topbar">
+            <div class="sc-dot" style="background:#E24B4A;"></div><div class="sc-dot" style="background:#fbbf24;"></div><div class="sc-dot" style="background:#4ade80;"></div>
+            <div class="sc-name" style="color:var(--green);">Gemini Gem</div>
+            <div class="sc-status status-working">Redactando...</div>
+          </div>
+          <div class="sc-body">
+            <div class="sc-task">"Estimado Juan, en respuesta a su consulta sobre..."</div>
+            <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+              <span style="font-size:11px;padding:3px 9px;background:rgba(74,222,128,0.08);color:var(--green);border-radius:6px;border:1px solid rgba(74,222,128,0.2);">Email 1 ✓</span>
+              <span style="font-size:11px;padding:3px 9px;background:rgba(74,222,128,0.08);color:var(--green);border-radius:6px;border:1px solid rgba(74,222,128,0.2);">Email 2 ✓</span>
+              <span style="font-size:11px;padding:3px 9px;background:rgba(251,191,36,0.08);color:var(--amber);border-radius:6px;border:1px solid rgba(251,191,36,0.2);">Email 3...</span>
+            </div>
+          </div>
+        </div>
+        <div class="screen-card">
+          <div class="sc-topbar">
+            <div class="sc-dot" style="background:#E24B4A;"></div><div class="sc-dot" style="background:#fbbf24;"></div><div class="sc-dot" style="background:#4ade80;"></div>
+            <div class="sc-name" style="color:var(--accent2);">Claude web</div>
+            <div class="sc-status status-done">Listo ✓</div>
+          </div>
+          <div class="sc-body">
+            <div class="sc-task">"Informe de ventas Q1 generado y listo para revisar"</div>
+            <div style="margin-top:8px;display:flex;gap:6px;">
+              <span style="font-size:11px;padding:3px 9px;background:rgba(74,222,128,0.08);color:var(--green);border-radius:6px;border:1px solid rgba(74,222,128,0.2);">Word.docx ✓</span>
+              <span style="font-size:11px;padding:3px 9px;background:rgba(74,222,128,0.08);color:var(--green);border-radius:6px;border:1px solid rgba(74,222,128,0.2);">Excel.xlsx ✓</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="center-note"><p>Los tres trabajan al mismo tiempo.<br>Tú solo <strong>supervisas y apruebas</strong>.</p></div>
+    </div>
+    <div class="bottom-nav">
+      <button class="arrow-btn" onclick="prev()">← Anterior</button>
+      <span class="slide-counter">3 / 5</span>
+      <button class="arrow-btn" onclick="next()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="slide" id="s3">
+    <div class="section">
+      <div class="section-label">03 — Los 5 tipos de agente</div>
+      <div class="section-title">Los roles que usan<br>las mejores empresas</div>
+      <div class="types-list">
+        <div class="type-item"><div class="type-icon-wrap" style="background:rgba(96,165,250,0.12);">🔍</div><div class="type-text"><div class="type-name">Researcher</div><div class="type-desc">Busca, filtra y sintetiza información de cualquier fuente</div></div><div class="type-tag" style="background:rgba(96,165,250,0.1);color:var(--blue);">Investiga</div></div>
+        <div class="type-item"><div class="type-icon-wrap" style="background:rgba(251,191,36,0.1);">🗺</div><div class="type-text"><div class="type-name">Planner</div><div class="type-desc">Diseña el plan y divide el trabajo en pasos ejecutables</div></div><div class="type-tag" style="background:rgba(251,191,36,0.1);color:var(--amber);">Planifica</div></div>
+        <div class="type-item"><div class="type-icon-wrap" style="background:rgba(74,222,128,0.1);">⚡</div><div class="type-text"><div class="type-name">Executor</div><div class="type-desc">Ejecuta las tareas concretas: escribe, genera, publica</div></div><div class="type-tag" style="background:rgba(74,222,128,0.1);color:var(--green);">Ejecuta</div></div>
+        <div class="type-item"><div class="type-icon-wrap" style="background:rgba(248,113,113,0.1);">🔎</div><div class="type-text"><div class="type-name">Critic</div><div class="type-desc">Revisa, detecta errores y mejora el resultado final</div></div><div class="type-tag" style="background:rgba(248,113,113,0.1);color:var(--coral);">Revisa</div></div>
+        <div class="type-item"><div class="type-icon-wrap" style="background:rgba(232,224,255,0.08);">🔧</div><div class="type-text"><div class="type-name">Operator</div><div class="type-desc">Conecta apps, mueve datos, acciona el sistema</div></div><div class="type-tag" style="background:rgba(232,224,255,0.08);color:var(--accent);">Conecta</div></div>
+      </div>
+      <div class="example-flow">
+        <div class="ef-label">Ejemplo — publicar un artículo</div>
+        <div class="ef-step"><div class="ef-role" style="color:var(--blue);">Researcher</div><div class="ef-action">Busca tendencias del tema</div></div>
+        <div class="ef-step"><div class="ef-role" style="color:var(--amber);">Planner</div><div class="ef-action">Estructura el artículo</div></div>
+        <div class="ef-step"><div class="ef-role" style="color:var(--green);">Executor</div><div class="ef-action">Redacta el contenido</div></div>
+        <div class="ef-step"><div class="ef-role" style="color:var(--coral);">Critic</div><div class="ef-action">Revisa tono y errores</div></div>
+        <div class="ef-step"><div class="ef-role" style="color:var(--accent);">Operator</div><div class="ef-action">Publica automáticamente</div></div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <button class="arrow-btn" onclick="prev()">← Anterior</button>
+      <span class="slide-counter">4 / 5</span>
+      <button class="arrow-btn" onclick="next()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="slide" id="s4">
+    <div class="section">
+      <div class="section-label">04 — Nivel techie</div>
+      <div class="section-title">Para los que quieren<br>ir más lejos</div>
+      <div class="techie-hero">
+        <div class="th-badge">★ Más potente</div>
+        <div class="th-title">Claude Code</div>
+        <div class="th-sub">El agente más potente para trabajo técnico. Funciona desde la terminal y actúa de forma autónoma.</div>
+        <div class="th-feats">
+          <div class="th-feat"><div class="th-feat-title">Crea proyectos enteros</div><div class="th-feat-desc">Escribe, testea y despliega código desde un prompt</div></div>
+          <div class="th-feat"><div class="th-feat-title">Lee tu código</div><div class="th-feat-desc">Entiende tu base de código y la modifica directamente</div></div>
+          <div class="th-feat"><div class="th-feat-title">Ejecuta en terminal</div><div class="th-feat-desc">Instala dependencias, gestiona archivos, corre comandos</div></div>
+          <div class="th-feat"><div class="th-feat-title">Agente autónomo</div><div class="th-feat-desc">Planifica, ejecuta y corrige errores solo</div></div>
+        </div>
+      </div>
+      <div class="auto-grid">
+        <div class="auto-card">
+          <div class="auto-head"><div class="auto-icon" style="background:rgba(139,92,246,0.15);">⚙️</div><div><div class="auto-name">n8n</div><div class="auto-level">Máximo control — self-hosted</div></div></div>
+          <div class="auto-item">Flujos visuales sin límite de personalización</div>
+          <div class="auto-item">Puedes escribir código JavaScript dentro</div>
+          <div class="auto-item">Tus datos, tu servidor, tu control total</div>
+          <div class="auto-item">Conecta Claude, APIs propias y bases de datos</div>
+        </div>
+        <div class="auto-card">
+          <div class="auto-head"><div class="auto-icon" style="background:rgba(251,191,36,0.1);">🔗</div><div><div class="auto-name">Zapier / Make</div><div class="auto-level">Sin código, rápido de montar</div></div></div>
+          <div class="auto-item">Zapier — más apps, más fácil de usar</div>
+          <div class="auto-item">Make — más potente, flujos visuales complejos</div>
+          <div class="auto-item">Conectan IA con Gmail, Slack, Notion, CRM...</div>
+          <div class="auto-item">Ejemplo: email entra → IA resume → CRM</div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <button class="arrow-btn" onclick="prev()">← Anterior</button>
+      <span class="slide-counter">5 / 5</span>
+      <button class="arrow-btn" disabled>Siguiente →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const slides = ['s0','s1','s2','s3','s4'];
+const labels = ['Inicio','El cambio','Paralelo','5 agentes','Techie'];
+let cur = 0;
+const nav = document.getElementById('nav');
+labels.forEach((l,i) => {
+  const b = document.createElement('button');
+  b.className = 'pill' + (i===0?' active':'');
+  b.textContent = l;
+  b.onclick = () => goTo(i);
+  nav.appendChild(b);
+});
+function goTo(n) {
+  document.getElementById(slides[cur]).classList.remove('on');
+  cur = n;
+  document.getElementById(slides[cur]).classList.add('on');
+  document.querySelectorAll('.pill').forEach((p,i) => p.classList.toggle('active', i===cur));
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function next() { if(cur<slides.length-1) goTo(cur+1); }
+function prev() { if(cur>0) goTo(cur-1); }
+document.addEventListener('keydown', e => {
+  if(e.key==='ArrowRight') next();
+  if(e.key==='ArrowLeft') prev();
+});
+</script>
+</body>
+</html>
