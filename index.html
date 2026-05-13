@@ -1,525 +1,619 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kimi Claw — Carrusel Instagram</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+*{box-sizing:border-box;margin:0;padding:0}
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&display=swap');
 
-body {
-  background: #0e0e14;
-  font-family: 'Syne', sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-  padding: 40px 20px;
+:root{
+  --purple:#6c63ff;
+  --teal:#00d4aa;
+  --red:#ff5555;
+  --dark:#09090f;
+  --surface:#111119;
+  --border:rgba(255,255,255,0.07);
+  --muted:rgba(255,255,255,0.35);
 }
 
-.carousel-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 12px;
-  letter-spacing: 3px;
-  color: #555570;
-  text-transform: uppercase;
-  margin-bottom: 8px;
+.wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:16px 0 24px;
+  background:transparent;
+  font-family:'Syne',sans-serif;
 }
 
-/* SLIDE WRAPPER — 1080x1920 scaled down */
-.slide {
-  width: 360px;
-  height: 640px;
-  position: relative;
-  overflow: hidden;
-  flex-shrink: 0;
+.phone{
+  width:340px;
+  height:600px;
+  background:var(--dark);
+  border-radius:32px;
+  border:1.5px solid rgba(255,255,255,0.1);
+  overflow:hidden;
+  position:relative;
+  touch-action:pan-y;
+  cursor:grab;
+  user-select:none;
+}
+.phone:active{cursor:grabbing}
+
+.slides{
+  display:flex;
+  width:100%;
+  height:100%;
+  transition:transform 0.38s cubic-bezier(.4,0,.2,1);
 }
 
-/* ── SLIDE 1 — PORTADA ── */
-.s1 { background: #0b0b12; }
-
-.s1 .bg-circle {
-  position: absolute;
-  width: 500px;
-  height: 500px;
-  border-radius: 50%;
-  border: 1px solid rgba(108,99,255,0.12);
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-.s1 .bg-circle2 {
-  position: absolute;
-  width: 340px;
-  height: 340px;
-  border-radius: 50%;
-  border: 1px solid rgba(108,99,255,0.08);
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.slide{
+  min-width:100%;
+  height:100%;
+  position:relative;
+  overflow:hidden;
+  padding:36px 32px 28px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
 }
 
-.s1 .tag {
-  position: absolute;
-  top: 52px;
-  left: 40px;
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 3px;
-  color: #00d4aa;
-  text-transform: uppercase;
+/* ── PORTADA ── */
+.s0{background:#09090f}
+.s0 .eyebrow{
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  letter-spacing:3px;
+  color:var(--teal);
+  text-transform:uppercase;
+}
+.s0 .hero{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.s0 .ghost-num{
+  font-size:140px;
+  font-weight:800;
+  color:transparent;
+  -webkit-text-stroke:1px rgba(108,99,255,0.18);
+  line-height:1;
+  letter-spacing:-8px;
+  position:absolute;
+  top:80px;
+  right:16px;
+}
+.s0 h1{
+  font-size:56px;
+  font-weight:800;
+  line-height:.95;
+  letter-spacing:-3px;
+  color:#fff;
+  margin-bottom:12px;
+}
+.s0 h1 span{color:var(--purple)}
+.s0 .sub{
+  font-family:'DM Mono',monospace;
+  font-size:12px;
+  color:rgba(255,255,255,0.4);
+  line-height:1.7;
+  max-width:220px;
+}
+.s0 .pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(108,99,255,0.12);
+  border:1px solid rgba(108,99,255,0.25);
+  padding:8px 16px;
+  border-radius:0;
+  font-family:'DM Mono',monospace;
+  font-size:11px;
+  color:var(--purple);
+  letter-spacing:2px;
+  width:fit-content;
+}
+.pill-arrow{font-size:14px}
+
+/* ── STEP SLIDES ── */
+.step-slide{background:#09090f}
+
+.progress-bar{
+  position:absolute;
+  top:0;left:0;right:0;
+  height:3px;
+  background:rgba(255,255,255,0.06);
+}
+.progress-fill{
+  height:100%;
+  background:var(--purple);
+  transition:width 0.5s ease;
 }
 
-.s1 .tag::before {
-  content: '▶ ';
-  font-size: 8px;
+.step-num-row{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  margin-top:8px;
+}
+.step-idx{
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  letter-spacing:3px;
+  color:var(--purple);
+  text-transform:uppercase;
+}
+.slide-count{
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  color:rgba(255,255,255,0.18);
 }
 
-.s1 .num {
-  position: absolute;
-  top: 140px;
-  left: 40px;
-  font-size: 120px;
-  font-weight: 800;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(108,99,255,0.25);
-  line-height: 1;
-  letter-spacing: -6px;
+.big-num{
+  position:absolute;
+  font-size:160px;
+  font-weight:800;
+  color:transparent;
+  -webkit-text-stroke:1px rgba(108,99,255,0.12);
+  line-height:1;
+  letter-spacing:-8px;
+  top:40px;
+  right:20px;
+  z-index:0;
 }
 
-.s1 .title {
-  position: absolute;
-  bottom: 160px;
-  left: 40px;
-  right: 40px;
+.step-content{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  position:relative;
+  z-index:1;
+  margin-top:16px;
 }
 
-.s1 .title .kimi {
-  font-size: 52px;
-  font-weight: 800;
-  color: #ffffff;
-  letter-spacing: -2px;
-  line-height: 1;
+.step-title{
+  font-size:38px;
+  font-weight:800;
+  line-height:1.05;
+  letter-spacing:-1.5px;
+  color:#fff;
+  margin-bottom:20px;
+}
+.step-title em{
+  font-style:normal;
+  color:var(--purple);
 }
 
-.s1 .title .claw {
-  font-size: 52px;
-  font-weight: 800;
-  color: #6c63ff;
-  letter-spacing: -2px;
-  line-height: 1;
+.step-body{
+  font-family:'DM Mono',monospace;
+  font-size:12.5px;
+  color:rgba(255,255,255,0.45);
+  line-height:1.8;
+}
+.step-body strong{
+  color:rgba(255,255,255,0.85);
+  font-weight:500;
 }
 
-.s1 .title .sub {
-  margin-top: 16px;
-  font-family: 'DM Mono', monospace;
-  font-size: 13px;
-  color: #6b6b85;
-  line-height: 1.6;
+.tip{
+  margin-top:20px;
+  border-left:2px solid var(--teal);
+  padding:10px 14px;
+  background:rgba(0,212,170,0.05);
+  border-radius:0;
+}
+.tip-label{
+  font-family:'DM Mono',monospace;
+  font-size:9px;
+  letter-spacing:2px;
+  color:var(--teal);
+  text-transform:uppercase;
+  margin-bottom:4px;
+}
+.tip-text{
+  font-family:'DM Mono',monospace;
+  font-size:11.5px;
+  color:rgba(255,255,255,0.5);
+  line-height:1.5;
 }
 
-.s1 .badge {
-  position: absolute;
-  bottom: 52px;
-  left: 40px;
-  background: rgba(108,99,255,0.15);
-  border: 1px solid rgba(108,99,255,0.3);
-  padding: 8px 18px;
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  color: #6c63ff;
-  letter-spacing: 2px;
+/* ── CHECKLIST ── */
+.s7{background:#09090f}
+.s7 .top-stripe{position:absolute;top:0;left:0;right:0;height:3px;background:var(--red)}
+.s7 .cl-title{
+  font-size:36px;
+  font-weight:800;
+  letter-spacing:-1.5px;
+  color:#fff;
+  line-height:1.05;
+  margin-bottom:4px;
+  margin-top:24px;
+}
+.s7 .cl-sub{
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  letter-spacing:2px;
+  color:var(--red);
+  text-transform:uppercase;
+  margin-bottom:20px;
+}
+.check-item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:11px 0;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  cursor:pointer;
+  transition:opacity .2s;
+}
+.check-item:last-child{border-bottom:none}
+.check-item:active{opacity:.6}
+.box{
+  width:20px;height:20px;
+  border:1px solid rgba(255,255,255,0.18);
+  border-radius:0;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  font-size:12px;
+  color:transparent;
+  transition:all .2s;
+}
+.check-item.done .box{
+  background:var(--teal);
+  border-color:var(--teal);
+  color:#fff;
+}
+.check-item.done .check-text{
+  text-decoration:line-through;
+  opacity:.4;
+}
+.check-text{
+  font-family:'DM Mono',monospace;
+  font-size:12px;
+  color:rgba(255,255,255,0.65);
+  line-height:1.4;
+}
+.progress-ring{
+  margin-top:16px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.ring-label{
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  color:rgba(255,255,255,0.25);
+  letter-spacing:1px;
+}
+.ring-fill{
+  flex:1;
+  height:3px;
+  background:rgba(255,255,255,0.08);
+  border-radius:0;
+  overflow:hidden;
+}
+.ring-inner{
+  height:100%;
+  background:var(--teal);
+  width:0%;
+  transition:width .4s ease;
+}
+.ring-pct{
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  color:var(--teal);
+  min-width:30px;
+  text-align:right;
 }
 
-.s1 .slide-num {
-  position: absolute;
-  bottom: 56px;
-  right: 40px;
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  color: #333350;
+/* ── DOTS ── */
+.dots{
+  display:flex;
+  gap:6px;
+  justify-content:center;
+  margin-top:14px;
+}
+.dot{
+  width:6px;height:6px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.15);
+  transition:all .3s ease;
+  cursor:pointer;
+}
+.dot.active{
+  background:var(--purple);
+  width:18px;
+  border-radius:3px;
 }
 
-/* ── STEP SLIDES (2-7) ── */
-.step-slide {
-  background: #0b0b12;
+/* ── NAV ARROWS ── */
+.nav-row{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+  justify-content:center;
 }
-
-.step-slide .top-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: #1a1a28;
+.nav-btn{
+  width:36px;height:36px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,0.1);
+  background:transparent;
+  color:rgba(255,255,255,0.5);
+  font-size:16px;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
 }
-
-.step-slide .top-bar-fill {
-  height: 100%;
-  background: #6c63ff;
+.nav-btn:hover{
+  border-color:rgba(255,255,255,0.3);
+  color:#fff;
 }
-
-.step-slide .step-label {
-  position: absolute;
-  top: 36px;
-  left: 40px;
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 3px;
-  color: #6c63ff;
-  text-transform: uppercase;
-}
-
-.step-slide .step-big {
-  position: absolute;
-  top: 72px;
-  left: 40px;
-  font-size: 100px;
-  font-weight: 800;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(108,99,255,0.2);
-  line-height: 1;
-  letter-spacing: -4px;
-}
-
-.step-slide .divider {
-  position: absolute;
-  top: 200px;
-  left: 40px;
-  right: 40px;
-  height: 1px;
-  background: #1e1e2a;
-}
-
-.step-slide .step-title {
-  position: absolute;
-  top: 224px;
-  left: 40px;
-  right: 40px;
-  font-size: 32px;
-  font-weight: 800;
-  color: #ffffff;
-  letter-spacing: -1px;
-  line-height: 1.15;
-}
-
-.step-slide .step-desc {
-  position: absolute;
-  top: 360px;
-  left: 40px;
-  right: 40px;
-  font-family: 'DM Mono', monospace;
-  font-size: 13px;
-  color: #7070a0;
-  line-height: 1.75;
-}
-
-.step-slide .tip-box {
-  position: absolute;
-  bottom: 80px;
-  left: 40px;
-  right: 40px;
-  border-left: 2px solid #00d4aa;
-  padding: 12px 16px;
-  background: rgba(0,212,170,0.05);
-}
-
-.step-slide .tip-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: #00d4aa;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-
-.step-slide .tip-text {
-  font-family: 'DM Mono', monospace;
-  font-size: 12px;
-  color: #9090b8;
-  line-height: 1.5;
-}
-
-.step-slide .slide-counter {
-  position: absolute;
-  bottom: 36px;
-  right: 40px;
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  color: #2a2a40;
-}
-
-/* ── SLIDE 8 — CHECKLIST ── */
-.s8 { background: #0b0b12; }
-
-.s8 .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: #6c63ff; }
-
-.s8 .label {
-  position: absolute;
-  top: 36px;
-  left: 40px;
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 3px;
-  color: #ff6b6b;
-  text-transform: uppercase;
-}
-
-.s8 .title {
-  position: absolute;
-  top: 72px;
-  left: 40px;
-  right: 40px;
-  font-size: 38px;
-  font-weight: 800;
-  color: #ffffff;
-  letter-spacing: -1.5px;
-  line-height: 1.1;
-}
-
-.s8 .checks {
-  position: absolute;
-  top: 210px;
-  left: 40px;
-  right: 40px;
-}
-
-.s8 .check {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 14px 0;
-  border-bottom: 1px solid #161622;
-}
-
-.s8 .check:last-child { border-bottom: none; }
-
-.s8 .check-box {
-  width: 20px;
-  height: 20px;
-  border: 1px solid #2a2a45;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-
-.s8 .check-text {
-  font-family: 'DM Mono', monospace;
-  font-size: 12px;
-  color: #8080a8;
-  line-height: 1.5;
-}
-
-.s8 .cta {
-  position: absolute;
-  bottom: 52px;
-  left: 40px;
-  right: 40px;
-  text-align: center;
-}
-
-.s8 .cta-line {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: #333350;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-
-.s8 .cta-url {
-  font-family: 'DM Mono', monospace;
-  font-size: 13px;
-  color: #6c63ff;
-}
+.nav-btn:disabled{opacity:.2;cursor:default}
 </style>
-</head>
-<body>
 
-<div class="carousel-label">Carrusel Instagram · 8 slides · 1080×1920</div>
+<h2 class="sr-only">Guía interactiva para configurar Kimi Claw en 6 pasos — carrusel de 8 slides</h2>
 
-<!-- ─── SLIDE 1: PORTADA ─── -->
-<div class="slide s1">
-  <div class="bg-circle"></div>
-  <div class="bg-circle2"></div>
-  <div class="tag">Guía rápida · IA</div>
-  <div class="num">6</div>
-  <div class="title">
-    <div class="kimi">Kimi</div>
-    <div class="claw">Claw</div>
-    <div class="sub">Configúralo bien<br>desde el primer día</div>
-  </div>
-  <div class="badge">6 PASOS → SWIPE</div>
-  <div class="slide-num">1/8</div>
-</div>
+<div class="wrap">
+  <div class="phone" id="phone">
+    <div class="slides" id="slides">
 
-<!-- ─── SLIDE 2: PASO 1 ─── -->
-<div class="slide step-slide">
-  <div class="top-bar"><div class="top-bar-fill" style="width:16.6%"></div></div>
-  <div class="step-label">// paso 01</div>
-  <div class="step-big">01</div>
-  <div class="divider"></div>
-  <div class="step-title">Abre el<br>entorno oficial</div>
-  <div class="step-desc">
-    Ve directamente a<br>
-    <span style="color:#6c63ff">kimi.com/bot</span><br><br>
-    No uses mirrors ni páginas<br>
-    de terceros. El punto de<br>
-    entrada correcto ya es<br>
-    parte de la configuración.
-  </div>
-  <div class="tip-box">
-    <div class="tip-label">// cuidado</div>
-    <div class="tip-text">Si ves un instalador<br>o .exe → sitio equivocado</div>
-  </div>
-  <div class="slide-counter">2/8</div>
-</div>
+      <!-- SLIDE 0: PORTADA -->
+      <div class="slide s0">
+        <div class="eyebrow">Guía de configuración · IA</div>
+        <div class="ghost-num">6</div>
+        <div class="hero">
+          <h1>Kimi<br><span>Claw</span></h1>
+          <p class="sub">Configúralo bien<br>desde el primer día.<br>6 pasos. Sin rodeos.</p>
+        </div>
+        <div class="pill"><span>SWIPE PARA EMPEZAR</span><span class="pill-arrow">→</span></div>
+      </div>
 
-<!-- ─── SLIDE 3: PASO 2 ─── -->
-<div class="slide step-slide">
-  <div class="top-bar"><div class="top-bar-fill" style="width:33.2%"></div></div>
-  <div class="step-label">// paso 02</div>
-  <div class="step-big">02</div>
-  <div class="divider"></div>
-  <div class="step-title">Inicia sesión<br>primero</div>
-  <div class="step-desc">
-    El login no es opcional.<br><br>
-    Sin cuenta activa, tu<br>
-    configuración no persiste<br>
-    entre sesiones.<br><br>
-    Una sesión temporal = setup<br>
-    incompleto e inconsistente.
-  </div>
-  <div class="tip-box">
-    <div class="tip-label">// recuerda</div>
-    <div class="tip-text">Estado del agente, historial<br>y config → todo requiere login</div>
-  </div>
-  <div class="slide-counter">3/8</div>
-</div>
+      <!-- SLIDE 1 -->
+      <div class="slide step-slide">
+        <div class="progress-bar"><div class="progress-fill" style="width:16.6%"></div></div>
+        <div class="step-num-row">
+          <span class="step-idx">// paso 01 de 06</span>
+          <span class="slide-count">2/8</span>
+        </div>
+        <div class="big-num">01</div>
+        <div class="step-content">
+          <div class="step-title">Abre el<br>entorno<br><em>oficial</em></div>
+          <div class="step-body">
+            Ve directamente a<br>
+            <strong>kimi.com/bot</strong><br><br>
+            Kimi Claw es una experiencia<br>
+            alojada en la nube, no un<br>
+            instalador local. Usar el<br>
+            punto de entrada correcto<br>
+            ya es parte del setup.
+          </div>
+          <div class="tip">
+            <div class="tip-label">// cuidado</div>
+            <div class="tip-text">¿Ves un .exe o package manager?<br>Estás en el sitio equivocado.</div>
+          </div>
+        </div>
+      </div>
 
-<!-- ─── SLIDE 4: PASO 3 ─── -->
-<div class="slide step-slide">
-  <div class="top-bar"><div class="top-bar-fill" style="width:49.8%"></div></div>
-  <div class="step-label">// paso 03</div>
-  <div class="step-big">03</div>
-  <div class="divider"></div>
-  <div class="step-title">Elige la ruta<br>en la nube</div>
-  <div class="step-desc">
-    Kimi Claw es hosted.<br>
-    No necesitas servidores<br>
-    propios para empezar.<br><br>
-    Usa la ruta gestionada<br>
-    por defecto a menos que<br>
-    tengas una razón concreta.
-  </div>
-  <div class="tip-box">
-    <div class="tip-label">// regla</div>
-    <div class="tip-text">Cloud primero → local<br>solo para casos avanzados</div>
-  </div>
-  <div class="slide-counter">4/8</div>
-</div>
+      <!-- SLIDE 2 -->
+      <div class="slide step-slide">
+        <div class="progress-bar"><div class="progress-fill" style="width:33.2%"></div></div>
+        <div class="step-num-row">
+          <span class="step-idx">// paso 02 de 06</span>
+          <span class="slide-count">3/8</span>
+        </div>
+        <div class="big-num">02</div>
+        <div class="step-content">
+          <div class="step-title">Inicia<br>sesión<br><em>primero</em></div>
+          <div class="step-body">
+            El login no es opcional.<br><br>
+            Sin cuenta activa, tu<br>
+            configuración, historial<br>
+            y estado del agente<br>
+            <strong>no persisten entre sesiones.</strong>
+          </div>
+          <div class="tip">
+            <div class="tip-label">// regla de oro</div>
+            <div class="tip-text">Sesión temporal = setup<br>incompleto e inconsistente.</div>
+          </div>
+        </div>
+      </div>
 
-<!-- ─── SLIDE 5: PASO 4 ─── -->
-<div class="slide step-slide">
-  <div class="top-bar"><div class="top-bar-fill" style="width:66.4%"></div></div>
-  <div class="step-label">// paso 04</div>
-  <div class="step-big">04</div>
-  <div class="divider"></div>
-  <div class="step-title">Crea el perfil<br>del agente</div>
-  <div class="step-desc">
-    Un perfil. Un rol.<br>
-    No sobre-configures de entrada.<br><br>
-    Buenos roles iniciales:<br>
-    <span style="color:#e8e8f0">→ Asistente de investigación</span><br>
-    <span style="color:#e8e8f0">→ Ayudante de planificación</span><br>
-    <span style="color:#e8e8f0">→ Soporte operativo ligero</span>
-  </div>
-  <div class="tip-box">
-    <div class="tip-label">// error común</div>
-    <div class="tip-text">Configurar todo el día 1<br>= no sabes qué falló</div>
-  </div>
-  <div class="slide-counter">5/8</div>
-</div>
+      <!-- SLIDE 3 -->
+      <div class="slide step-slide">
+        <div class="progress-bar"><div class="progress-fill" style="width:49.8%"></div></div>
+        <div class="step-num-row">
+          <span class="step-idx">// paso 03 de 06</span>
+          <span class="slide-count">4/8</span>
+        </div>
+        <div class="big-num">03</div>
+        <div class="step-content">
+          <div class="step-title">Elige<br>la ruta<br><em>cloud</em></div>
+          <div class="step-body">
+            Usa la ruta gestionada<br>
+            por defecto.<br><br>
+            No necesitas servidores<br>
+            propios para empezar.<br>
+            <strong>Cloud primero</strong>, infraestructura<br>
+            propia solo si tienes<br>
+            una razón concreta.
+          </div>
+          <div class="tip">
+            <div class="tip-label">// para la mayoría</div>
+            <div class="tip-text">La ruta hosted es el camino<br>de éxito más rápido.</div>
+          </div>
+        </div>
+      </div>
 
-<!-- ─── SLIDE 6: PASO 5 ─── -->
-<div class="slide step-slide">
-  <div class="top-bar"><div class="top-bar-fill" style="width:83%"></div></div>
-  <div class="step-label">// paso 05</div>
-  <div class="step-big">05</div>
-  <div class="divider"></div>
-  <div class="step-title">Dale una<br>tarea real</div>
-  <div class="step-desc">
-    Prueba el setup con algo<br>
-    concreto desde el día 1.<br><br>
-    <span style="color:#e8e8f0">→ Resumir un documento</span><br>
-    <span style="color:#e8e8f0">→ Organizar notas</span><br>
-    <span style="color:#e8e8f0">→ Redactar un output corto</span><br><br>
-    Esto prueba que el setup<br>
-    funciona de verdad.
-  </div>
-  <div class="tip-box">
-    <div class="tip-label">// validación</div>
-    <div class="tip-text">Login exitoso ≠ setup correcto.<br>Solo una tarea real lo prueba.</div>
-  </div>
-  <div class="slide-counter">6/8</div>
-</div>
+      <!-- SLIDE 4 -->
+      <div class="slide step-slide">
+        <div class="progress-bar"><div class="progress-fill" style="width:66.4%"></div></div>
+        <div class="step-num-row">
+          <span class="step-idx">// paso 04 de 06</span>
+          <span class="slide-count">5/8</span>
+        </div>
+        <div class="big-num">04</div>
+        <div class="step-content">
+          <div class="step-title">Crea un<br>perfil de<br><em>agente</em></div>
+          <div class="step-body">
+            <strong>Un perfil. Un rol. Sin más.</strong><br><br>
+            Buenos puntos de partida:<br>
+            → Asistente de investigación<br>
+            → Ayudante de planificación<br>
+            → Soporte operativo ligero<br><br>
+            No sobre-configures el día 1.
+          </div>
+          <div class="tip">
+            <div class="tip-label">// error común</div>
+            <div class="tip-text">Más ajustes ≠ mejor resultado.<br>Menos = más fácil de evaluar.</div>
+          </div>
+        </div>
+      </div>
 
-<!-- ─── SLIDE 7: PASO 6 ─── -->
-<div class="slide step-slide">
-  <div class="top-bar"><div class="top-bar-fill" style="width:100%"></div></div>
-  <div class="step-label">// paso 06</div>
-  <div class="step-big">06</div>
-  <div class="divider"></div>
-  <div class="step-title">Expande solo<br>tras el éxito</div>
-  <div class="step-desc">
-    Cuando el primer flujo<br>
-    funcione de forma estable,<br>
-    entonces expande.<br><br>
-    La secuencia correcta:<br>
-    <span style="color:#6c63ff">login → agente → tarea<br>→ revisión → expansión</span>
-  </div>
-  <div class="tip-box">
-    <div class="tip-label">// clave</div>
-    <div class="tip-text">Juzga el producto con un<br>workflow real, no con ajustes.</div>
-  </div>
-  <div class="slide-counter">7/8</div>
-</div>
+      <!-- SLIDE 5 -->
+      <div class="slide step-slide">
+        <div class="progress-bar"><div class="progress-fill" style="width:83%"></div></div>
+        <div class="step-num-row">
+          <span class="step-idx">// paso 05 de 06</span>
+          <span class="slide-count">6/8</span>
+        </div>
+        <div class="big-num">05</div>
+        <div class="step-content">
+          <div class="step-title">Dale una<br>tarea<br><em>real</em></div>
+          <div class="step-body">
+            El login exitoso no valida<br>
+            el setup. Solo una tarea<br>
+            real lo prueba.<br><br>
+            → Resumir un documento<br>
+            → Organizar notas en acciones<br>
+            → Redactar un output concreto
+          </div>
+          <div class="tip">
+            <div class="tip-label">// clave</div>
+            <div class="tip-text">Si el agente produce algo útil<br>→ el setup está funcionando.</div>
+          </div>
+        </div>
+      </div>
 
-<!-- ─── SLIDE 8: CHECKLIST ─── -->
-<div class="slide s8">
-  <div class="top-bar"></div>
-  <div class="label">// checklist final</div>
-  <div class="title">¿Está<br>listo?</div>
-  <div class="checks">
-    <div class="check">
-      <div class="check-box"></div>
-      <div class="check-text">Entorno oficial de Kimi abierto</div>
+      <!-- SLIDE 6 -->
+      <div class="slide step-slide">
+        <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+        <div class="step-num-row">
+          <span class="step-idx">// paso 06 de 06</span>
+          <span class="slide-count">7/8</span>
+        </div>
+        <div class="big-num">06</div>
+        <div class="step-content">
+          <div class="step-title">Expande<br>solo tras<br><em>el éxito</em></div>
+          <div class="step-body">
+            Cuando el primer flujo<br>
+            sea estable, entonces<br>
+            añade más instrucciones.<br><br>
+            La secuencia correcta:<br>
+            <strong>login → agente → tarea<br>→ revisión → expansión</strong>
+          </div>
+          <div class="tip">
+            <div class="tip-label">// mentalidad</div>
+            <div class="tip-text">Juzga Kimi Claw con un<br>workflow real, no con ajustes.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 7: CHECKLIST -->
+      <div class="slide s7">
+        <div class="top-stripe"></div>
+        <div>
+          <div class="cl-sub">// checklist final</div>
+          <div class="cl-title">¿Está<br>todo listo?</div>
+        </div>
+        <div id="checks">
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="box">✓</div>
+            <span class="check-text">Entorno oficial de Kimi abierto</span>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="box">✓</div>
+            <span class="check-text">Login completado y estable</span>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="box">✓</div>
+            <span class="check-text">Un agente hosted creado</span>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="box">✓</div>
+            <span class="check-text">Un workflow concreto probado</span>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="box">✓</div>
+            <span class="check-text">Output útil generado</span>
+          </div>
+        </div>
+        <div class="progress-ring">
+          <span class="ring-label">PROGRESO</span>
+          <div class="ring-fill"><div class="ring-inner" id="ring"></div></div>
+          <span class="ring-pct" id="pct">0%</span>
+        </div>
+      </div>
+
     </div>
-    <div class="check">
-      <div class="check-box"></div>
-      <div class="check-text">Login completado y estable</div>
-    </div>
-    <div class="check">
-      <div class="check-box"></div>
-      <div class="check-text">Un agente hosted creado</div>
-    </div>
-    <div class="check">
-      <div class="check-box"></div>
-      <div class="check-text">Un workflow concreto probado</div>
-    </div>
-    <div class="check">
-      <div class="check-box"></div>
-      <div class="check-text">Output útil generado</div>
-    </div>
   </div>
-  <div class="cta">
-    <div class="cta-line">guía completa en</div>
-    <div class="cta-url">progressiverobot.com</div>
+
+  <div class="dots" id="dots"></div>
+
+  <div class="nav-row">
+    <button class="nav-btn" id="prev" onclick="go(-1)" aria-label="Anterior">←</button>
+    <button class="nav-btn" id="next" onclick="go(1)" aria-label="Siguiente">→</button>
   </div>
 </div>
 
-</body>
-</html>
+<script>
+const TOTAL=8;
+let cur=0,startX=0,dragging=false;
+const slidesEl=document.getElementById('slides');
+const dotsEl=document.getElementById('dots');
+const prevBtn=document.getElementById('prev');
+const nextBtn=document.getElementById('next');
+
+for(let i=0;i<TOTAL;i++){
+  const d=document.createElement('div');
+  d.className='dot'+(i===0?' active':'');
+  d.onclick=()=>goTo(i);
+  dotsEl.appendChild(d);
+}
+
+function goTo(n){
+  cur=Math.max(0,Math.min(TOTAL-1,n));
+  slidesEl.style.transform=`translateX(-${cur*100}%)`;
+  document.querySelectorAll('.dot').forEach((d,i)=>{
+    d.className='dot'+(i===cur?' active':'');
+  });
+  prevBtn.disabled=cur===0;
+  nextBtn.disabled=cur===TOTAL-1;
+}
+
+function go(dir){goTo(cur+dir)}
+goTo(0);
+
+const phone=document.getElementById('phone');
+phone.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;dragging=true},{passive:true});
+phone.addEventListener('touchend',e=>{
+  if(!dragging)return;
+  const dx=e.changedTouches[0].clientX-startX;
+  if(Math.abs(dx)>40)go(dx<0?1:-1);
+  dragging=false;
+},{passive:true});
+
+let mDown=false,mX=0;
+phone.addEventListener('mousedown',e=>{mDown=true;mX=e.clientX});
+phone.addEventListener('mouseup',e=>{
+  if(!mDown)return;
+  const dx=e.clientX-mX;
+  if(Math.abs(dx)>30)go(dx<0?1:-1);
+  mDown=false;
+});
+
+function toggleCheck(el){
+  el.classList.toggle('done');
+  const done=document.querySelectorAll('.check-item.done').length;
+  const pct=Math.round(done/5*100);
+  document.getElementById('ring').style.width=pct+'%';
+  document.getElementById('pct').textContent=pct+'%';
+}
+</script>
