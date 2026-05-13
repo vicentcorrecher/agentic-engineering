@@ -2,994 +2,524 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Ingeniería Agéntica</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kimi Claw — Carrusel Instagram</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700&family=DM+Sans:wght@300;400;500&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --ink:#0d0d0d;--ink2:#1c1c1c;--ink3:#2e2e2e;
-  --dust:#f5f3ee;--dust2:#ede9e1;--dust3:#e0dbd0;
-  --paper:#faf9f6;
-  --muted:#8a8680;--hint:#b5b0a8;
-  --g:#3d9a6e;--a:#c9762a;--b:#2e6db4;--r:#b83a3a;--p:#6b4fa8;
-  --serif:'Fraunces',Georgia,serif;
-  --sans:'DM Sans',system-ui,sans-serif;
-  --safe-bottom:env(safe-area-inset-bottom,0px);
+body {
+  background: #0e0e14;
+  font-family: 'Syne', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 40px 20px;
 }
 
-html{scroll-behavior:smooth;}
-body{
-  background:var(--paper);color:var(--ink);
-  font-family:var(--sans);font-size:16px;line-height:1.55;
-  min-height:100vh;overflow-x:hidden;
-  -webkit-font-smoothing:antialiased;
+.carousel-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: #555570;
+  text-transform: uppercase;
+  margin-bottom: 8px;
 }
 
-/* ── SCROLL SNAP CONTAINER ── */
-.app{
-  height:100dvh;
-  overflow-y:scroll;
-  scroll-snap-type:y mandatory;
-  scroll-behavior:smooth;
-  -webkit-overflow-scrolling:touch;
-}
-.app::-webkit-scrollbar{display:none;}
-
-/* ── EACH SECTION ── */
-section{
-  scroll-snap-align:start;
-  min-height:100dvh;
-  display:flex;flex-direction:column;
-  position:relative;
-  overflow:hidden;
+/* SLIDE WRAPPER — 1080x1920 scaled down */
+.slide {
+  width: 360px;
+  height: 640px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
-/* ── PROGRESS DOTS ── */
-.dots{
-  position:fixed;right:16px;top:50%;
-  transform:translateY(-50%);
-  display:flex;flex-direction:column;gap:7px;
-  z-index:200;
+/* ── SLIDE 1 — PORTADA ── */
+.s1 { background: #0b0b12; }
+
+.s1 .bg-circle {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  border: 1px solid rgba(108,99,255,0.12);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
-.dot{
-  width:6px;height:6px;border-radius:50%;
-  background:var(--dust3);
-  transition:all 0.35s cubic-bezier(.4,0,.2,1);
-  cursor:pointer;
-}
-.dot.on{
-  background:var(--ink);
-  height:20px;border-radius:3px;
+.s1 .bg-circle2 {
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  border: 1px solid rgba(108,99,255,0.08);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-/* ── SECTION COUNTER ── */
-.sec-num{
-  font-family:var(--sans);font-size:10px;font-weight:500;
-  letter-spacing:0.18em;text-transform:uppercase;
-  color:var(--hint);
+.s1 .tag {
+  position: absolute;
+  top: 52px;
+  left: 40px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: #00d4aa;
+  text-transform: uppercase;
 }
 
-/* ══════════════════════════════
-   SECTION 0 — PORTADA
-══════════════════════════════ */
-#s0{background:var(--ink);justify-content:flex-end;padding:0;}
-
-.cover-bg{
-  position:absolute;inset:0;
-  background:radial-gradient(ellipse 80% 60% at 70% 20%, #1e1a30 0%, transparent 60%),
-             radial-gradient(ellipse 60% 50% at 10% 80%, #0e2215 0%, transparent 55%),
-             var(--ink);
-}
-.cover-grain{
-  position:absolute;inset:0;opacity:0.035;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-size:200px;
+.s1 .tag::before {
+  content: '▶ ';
+  font-size: 8px;
 }
 
-.cover-content{
-  position:relative;z-index:1;
-  padding:0 28px calc(56px + var(--safe-bottom));
-  display:flex;flex-direction:column;gap:0;
+.s1 .num {
+  position: absolute;
+  top: 140px;
+  left: 40px;
+  font-size: 120px;
+  font-weight: 800;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(108,99,255,0.25);
+  line-height: 1;
+  letter-spacing: -6px;
 }
 
-.cover-eyebrow{
-  font-family:var(--sans);font-size:11px;font-weight:500;
-  letter-spacing:0.2em;text-transform:uppercase;
-  color:rgba(255,255,255,0.35);
-  margin-bottom:20px;
-  display:flex;align-items:center;gap:8px;
-}
-.cover-eyebrow::before{
-  content:'';display:block;width:20px;height:1px;background:rgba(255,255,255,0.25);
+.s1 .title {
+  position: absolute;
+  bottom: 160px;
+  left: 40px;
+  right: 40px;
 }
 
-.cover-h{
-  font-family:var(--serif);font-weight:900;
-  font-size:clamp(3.2rem,14vw,5.5rem);
-  line-height:0.9;letter-spacing:-0.02em;
-  color:#fff;margin-bottom:10px;
-}
-.cover-h span{
-  font-style:italic;font-weight:300;
-  color:rgba(255,255,255,0.45);
-  display:block;
+.s1 .title .kimi {
+  font-size: 52px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -2px;
+  line-height: 1;
 }
 
-.cover-rule{width:40px;height:1px;background:rgba(255,255,255,0.15);margin:24px 0;}
-
-.cover-sub{
-  font-size:15px;font-weight:300;
-  color:rgba(255,255,255,0.5);
-  line-height:1.65;max-width:300px;
-  margin-bottom:40px;
+.s1 .title .claw {
+  font-size: 52px;
+  font-weight: 800;
+  color: #6c63ff;
+  letter-spacing: -2px;
+  line-height: 1;
 }
 
-.cover-menu{display:flex;flex-direction:column;gap:1px;}
-.cover-item{
-  display:flex;align-items:center;gap:16px;
-  padding:14px 0;
-  border-top:1px solid rgba(255,255,255,0.06);
-  cursor:pointer;transition:opacity 0.2s;
-}
-.cover-item:active{opacity:0.6;}
-.ci-n{
-  font-family:var(--serif);font-size:11px;
-  color:rgba(255,255,255,0.2);
-  min-width:20px;
-}
-.ci-t{
-  font-family:var(--sans);font-size:14px;font-weight:400;
-  color:rgba(255,255,255,0.75);flex:1;
-}
-.ci-arr{color:rgba(255,255,255,0.2);font-size:14px;}
-
-/* ══════════════════════════════
-   SECTION 1 — EL CAMBIO
-══════════════════════════════ */
-#s1{background:var(--dust);padding:60px 28px 40px;}
-
-.s1-header{margin-bottom:36px;}
-.s1-kicker{
-  font-family:var(--sans);font-size:10px;font-weight:500;
-  letter-spacing:0.2em;text-transform:uppercase;
-  color:var(--muted);margin-bottom:14px;
-}
-.s1-h{
-  font-family:var(--serif);font-weight:700;
-  font-size:clamp(2rem,8vw,3rem);
-  line-height:1.05;letter-spacing:-0.01em;color:var(--ink);
-}
-.s1-h em{font-style:italic;font-weight:300;}
-
-.compare-table{
-  background:#fff;
-  border-radius:16px;
-  overflow:hidden;
-  border:1px solid var(--dust3);
-  margin-bottom:20px;
-}
-.ct-row{
-  display:grid;grid-template-columns:1fr 1fr;
-}
-.ct-head{
-  padding:14px 16px;
-  font-size:10px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;
-  color:var(--muted);
-}
-.ct-head:first-child{border-right:1px solid var(--dust3);}
-.ct-body{display:contents;}
-.ct-cell{
-  padding:12px 16px;
-  font-size:13px;color:var(--ink3);line-height:1.45;
-  border-top:1px solid var(--dust3);
-}
-.ct-cell:first-child{
-  border-right:1px solid var(--dust3);
-  color:var(--muted);
-}
-.ct-cell.new{color:var(--ink);font-weight:500;}
-
-.callout{
-  background:var(--ink);
-  border-radius:14px;
-  padding:18px 20px;
-  display:flex;gap:14px;align-items:flex-start;
-}
-.callout-icon{font-size:18px;margin-top:1px;flex-shrink:0;}
-.callout-text{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.6;}
-.callout-text strong{color:#fff;font-weight:500;}
-
-/* ══════════════════════════════
-   SECTION 2 — PANTALLAS
-══════════════════════════════ */
-#s2{background:var(--paper);padding:60px 28px 40px;}
-
-.s2-h{
-  font-family:var(--serif);font-weight:700;
-  font-size:clamp(1.9rem,7.5vw,2.8rem);
-  line-height:1.05;letter-spacing:-0.01em;
-  color:var(--ink);margin-bottom:8px;
-}
-.s2-h em{font-style:italic;font-weight:300;}
-.s2-sub{font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.5;}
-
-.mock-screen{
-  background:var(--ink2);
-  border-radius:16px;overflow:hidden;
-  margin-bottom:10px;
-  border:1px solid rgba(0,0,0,0.08);
-}
-.ms-bar{
-  display:flex;align-items:center;gap:5px;
-  padding:9px 12px;
-  border-bottom:1px solid rgba(255,255,255,0.06);
-}
-.ms-dot{width:7px;height:7px;border-radius:50%;}
-.ms-title{
-  margin-left:6px;font-size:11px;font-weight:500;
-  flex:1;
-}
-.ms-badge{
-  font-size:10px;font-weight:500;
-  padding:2px 8px;border-radius:8px;
-}
-.badge-busy{background:rgba(201,118,42,0.18);color:#e8942e;}
-.badge-ok{background:rgba(61,154,110,0.15);color:#3d9a6e;}
-.ms-body{padding:12px 14px;}
-.ms-msg{font-size:12px;color:rgba(255,255,255,0.4);font-style:italic;margin-bottom:8px;}
-.ms-bar-track{height:2px;background:rgba(255,255,255,0.06);border-radius:1px;overflow:hidden;}
-.ms-bar-fill{height:100%;border-radius:1px;}
-.ms-tags{display:flex;gap:5px;flex-wrap:wrap;}
-.ms-tag{font-size:10px;padding:3px 8px;border-radius:6px;font-weight:500;}
-
-.you-node{
-  background:var(--ink);color:#fff;
-  border-radius:12px;padding:14px 18px;
-  display:flex;align-items:center;gap:12px;
-  margin-top:4px;
-}
-.yn-icon{font-size:20px;}
-.yn-text{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.45;}
-.yn-text strong{color:#fff;}
-
-/* ══════════════════════════════
-   SECTION 3 — 5 AGENTES
-══════════════════════════════ */
-#s3{background:var(--dust);padding:60px 28px 40px;}
-
-.s3-h{
-  font-family:var(--serif);font-weight:700;
-  font-size:clamp(1.9rem,7.5vw,2.8rem);
-  line-height:1.05;letter-spacing:-0.01em;color:var(--ink);margin-bottom:28px;
-}
-.s3-h em{font-style:italic;font-weight:300;}
-
-.agents{display:flex;flex-direction:column;gap:1px;margin-bottom:20px;}
-.agent-row{
-  background:#fff;
-  padding:16px 18px;
-  display:flex;align-items:center;gap:14px;
-  cursor:default;
-  transition:background 0.15s;
-}
-.agent-row:first-child{border-radius:14px 14px 0 0;}
-.agent-row:last-child{border-radius:0 0 14px 14px;}
-.ar-icon{
-  width:40px;height:40px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;flex-shrink:0;
-}
-.ar-name{
-  font-family:var(--serif);font-size:16px;font-weight:700;
-  color:var(--ink);
-}
-.ar-desc{font-size:12px;color:var(--muted);line-height:1.4;margin-top:1px;}
-.ar-tag{
-  margin-left:auto;
-  font-size:10px;font-weight:500;
-  padding:4px 10px;border-radius:8px;
-  white-space:nowrap;align-self:flex-start;
-  flex-shrink:0;
+.s1 .title .sub {
+  margin-top: 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: #6b6b85;
+  line-height: 1.6;
 }
 
-.flow-visual{
-  background:#fff;border-radius:14px;
-  padding:18px 20px;
-  border:1px solid var(--dust3);
-}
-.fv-label{
-  font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
-  color:var(--hint);margin-bottom:14px;
-}
-.fv-chain{display:flex;flex-direction:column;gap:0;}
-.fv-step{
-  display:flex;align-items:center;gap:12px;
-  padding:9px 0;
-  border-bottom:1px solid var(--dust3);
-}
-.fv-step:last-child{border-bottom:none;}
-.fv-role{
-  font-family:var(--sans);font-size:11px;font-weight:500;
-  min-width:76px;
-}
-.fv-action{font-size:13px;color:var(--muted);}
-.fv-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-
-/* ══════════════════════════════
-   SECTION 4 — TECHIE
-══════════════════════════════ */
-#s4{background:var(--ink);padding:60px 28px 40px;}
-
-.s4-h{
-  font-family:var(--serif);font-weight:700;
-  font-size:clamp(1.9rem,7.5vw,2.8rem);
-  line-height:1.05;letter-spacing:-0.01em;
-  color:#fff;margin-bottom:6px;
-}
-.s4-h em{font-style:italic;font-weight:300;color:rgba(255,255,255,0.35);}
-.s4-sub{font-size:14px;color:rgba(255,255,255,0.35);margin-bottom:28px;}
-
-.tool-hero{
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:16px;padding:20px;margin-bottom:10px;
-  position:relative;overflow:hidden;
-}
-.tool-hero::after{
-  content:'';position:absolute;top:-60px;right:-60px;
-  width:160px;height:160px;
-  background:radial-gradient(circle, rgba(107,79,168,0.3) 0%, transparent 65%);
-  pointer-events:none;
-}
-.th-tag{
-  display:inline-flex;align-items:center;gap:5px;
-  font-size:10px;font-weight:500;
-  color:rgba(167,139,250,0.9);
-  background:rgba(107,79,168,0.15);
-  border:1px solid rgba(107,79,168,0.25);
-  border-radius:20px;padding:3px 10px;margin-bottom:12px;
-}
-.th-name{
-  font-family:var(--serif);font-size:1.5rem;font-weight:700;
-  color:#fff;margin-bottom:4px;
-}
-.th-desc{font-size:13px;color:rgba(255,255,255,0.4);line-height:1.5;margin-bottom:16px;}
-.th-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-.th-feat{
-  background:rgba(255,255,255,0.04);
-  border:1px solid rgba(255,255,255,0.06);
-  border-radius:10px;padding:10px;
-}
-.th-ft{font-size:11px;font-weight:500;color:rgba(255,255,255,0.7);margin-bottom:2px;}
-.th-fd{font-size:11px;color:rgba(255,255,255,0.3);line-height:1.4;}
-
-.tool-cards{display:flex;flex-direction:column;gap:8px;}
-.tool-card{
-  border:1px solid rgba(255,255,255,0.07);
-  border-radius:14px;padding:16px;
-  display:flex;gap:14px;align-items:flex-start;
-}
-.tc-icon{
-  width:36px;height:36px;border-radius:9px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:16px;flex-shrink:0;
-  background:rgba(255,255,255,0.05);
-}
-.tc-name{font-family:var(--serif);font-size:15px;font-weight:700;color:#fff;margin-bottom:2px;}
-.tc-level{font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:8px;}
-.tc-items{display:flex;flex-direction:column;gap:4px;}
-.tc-item{
-  font-size:12px;color:rgba(255,255,255,0.35);
-  padding-left:10px;border-left:1.5px solid rgba(255,255,255,0.08);
-  line-height:1.4;
+.s1 .badge {
+  position: absolute;
+  bottom: 52px;
+  left: 40px;
+  background: rgba(108,99,255,0.15);
+  border: 1px solid rgba(108,99,255,0.3);
+  padding: 8px 18px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: #6c63ff;
+  letter-spacing: 2px;
 }
 
-/* ══════════════════════════════
-   SECTION 5 — GUÍA
-══════════════════════════════ */
-#s5{background:var(--paper);padding:60px 28px calc(40px + var(--safe-bottom));}
-
-.s5-h{
-  font-family:var(--serif);font-weight:700;
-  font-size:clamp(1.9rem,7.5vw,2.8rem);
-  line-height:1.05;letter-spacing:-0.01em;color:var(--ink);margin-bottom:6px;
-}
-.s5-h em{font-style:italic;font-weight:300;}
-.s5-sub{font-size:14px;color:var(--muted);margin-bottom:24px;}
-
-.profile-row{
-  display:flex;gap:6px;overflow-x:auto;
-  scrollbar-width:none;margin-bottom:20px;
-}
-.profile-row::-webkit-scrollbar{display:none;}
-.ptab{
-  flex-shrink:0;
-  font-family:var(--sans);font-size:12px;font-weight:500;
-  padding:7px 16px;border-radius:20px;
-  border:1.5px solid var(--dust3);
-  background:transparent;color:var(--muted);
-  cursor:pointer;transition:all 0.2s;
-}
-.ptab.on{
-  background:var(--ink);color:#fff;border-color:var(--ink);
+.s1 .slide-num {
+  position: absolute;
+  bottom: 56px;
+  right: 40px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: #333350;
 }
 
-.prog-bar-wrap{
-  background:var(--dust2);border-radius:12px;
-  padding:14px 16px;margin-bottom:14px;
-}
-.pbw-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.pbw-label{font-size:12px;color:var(--muted);}
-.pbw-count{
-  font-family:var(--serif);font-size:14px;font-weight:700;color:var(--ink);
-}
-.pbw-track{height:3px;background:var(--dust3);border-radius:2px;overflow:hidden;}
-.pbw-fill{height:100%;background:var(--g);border-radius:2px;transition:width 0.4s ease;}
-
-.steps{display:flex;flex-direction:column;gap:8px;}
-.step{
-  display:flex;gap:14px;
-  background:#fff;border-radius:14px;
-  padding:16px;border:1.5px solid var(--dust3);
-  cursor:pointer;
-  transition:border-color 0.2s, background 0.2s;
-  -webkit-tap-highlight-color:transparent;
-}
-.step.done{
-  border-color:rgba(61,154,110,0.3);
-  background:rgba(61,154,110,0.03);
-}
-.step:active{transform:scale(0.99);}
-
-.step-num{
-  width:30px;height:30px;border-radius:50%;
-  border:1.5px solid var(--dust3);
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--serif);font-size:12px;font-weight:700;
-  color:var(--hint);flex-shrink:0;
-  transition:all 0.25s;
-}
-.step.done .step-num{
-  background:rgba(61,154,110,0.12);
-  border-color:rgba(61,154,110,0.35);
-  color:var(--g);
-}
-.step-body{flex:1;min-width:0;}
-.step-title{
-  font-size:14px;font-weight:500;color:var(--ink);
-  line-height:1.35;margin-bottom:4px;
-  transition:color 0.2s;
-}
-.step.done .step-title{color:var(--hint);text-decoration:line-through;text-decoration-color:var(--dust3);}
-.step-desc{font-size:12px;color:var(--muted);line-height:1.5;}
-.step-tool{
-  display:inline-block;
-  font-size:10px;font-weight:500;
-  padding:3px 9px;border-radius:7px;
-  margin-top:7px;
+/* ── STEP SLIDES (2-7) ── */
+.step-slide {
+  background: #0b0b12;
 }
 
-.panel{display:none;}
-.panel.on{display:block;}
-
-/* ── SWIPE HINT ── */
-.swipe-hint{
-  position:fixed;bottom:calc(20px + var(--safe-bottom));left:50%;
-  transform:translateX(-50%);
-  font-size:11px;color:var(--hint);
-  display:flex;align-items:center;gap:6px;
-  opacity:1;transition:opacity 0.5s;
-  pointer-events:none;z-index:100;
+.step-slide .top-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #1a1a28;
 }
-.swipe-hint.hide{opacity:0;}
-.sh-arrow{animation:bob 1.4s ease-in-out infinite;}
-@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(4px);}}
+
+.step-slide .top-bar-fill {
+  height: 100%;
+  background: #6c63ff;
+}
+
+.step-slide .step-label {
+  position: absolute;
+  top: 36px;
+  left: 40px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: #6c63ff;
+  text-transform: uppercase;
+}
+
+.step-slide .step-big {
+  position: absolute;
+  top: 72px;
+  left: 40px;
+  font-size: 100px;
+  font-weight: 800;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(108,99,255,0.2);
+  line-height: 1;
+  letter-spacing: -4px;
+}
+
+.step-slide .divider {
+  position: absolute;
+  top: 200px;
+  left: 40px;
+  right: 40px;
+  height: 1px;
+  background: #1e1e2a;
+}
+
+.step-slide .step-title {
+  position: absolute;
+  top: 224px;
+  left: 40px;
+  right: 40px;
+  font-size: 32px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -1px;
+  line-height: 1.15;
+}
+
+.step-slide .step-desc {
+  position: absolute;
+  top: 360px;
+  left: 40px;
+  right: 40px;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: #7070a0;
+  line-height: 1.75;
+}
+
+.step-slide .tip-box {
+  position: absolute;
+  bottom: 80px;
+  left: 40px;
+  right: 40px;
+  border-left: 2px solid #00d4aa;
+  padding: 12px 16px;
+  background: rgba(0,212,170,0.05);
+}
+
+.step-slide .tip-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #00d4aa;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.step-slide .tip-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: #9090b8;
+  line-height: 1.5;
+}
+
+.step-slide .slide-counter {
+  position: absolute;
+  bottom: 36px;
+  right: 40px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: #2a2a40;
+}
+
+/* ── SLIDE 8 — CHECKLIST ── */
+.s8 { background: #0b0b12; }
+
+.s8 .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: #6c63ff; }
+
+.s8 .label {
+  position: absolute;
+  top: 36px;
+  left: 40px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: #ff6b6b;
+  text-transform: uppercase;
+}
+
+.s8 .title {
+  position: absolute;
+  top: 72px;
+  left: 40px;
+  right: 40px;
+  font-size: 38px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+}
+
+.s8 .checks {
+  position: absolute;
+  top: 210px;
+  left: 40px;
+  right: 40px;
+}
+
+.s8 .check {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid #161622;
+}
+
+.s8 .check:last-child { border-bottom: none; }
+
+.s8 .check-box {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #2a2a45;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.s8 .check-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: #8080a8;
+  line-height: 1.5;
+}
+
+.s8 .cta {
+  position: absolute;
+  bottom: 52px;
+  left: 40px;
+  right: 40px;
+  text-align: center;
+}
+
+.s8 .cta-line {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #333350;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.s8 .cta-url {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: #6c63ff;
+}
 </style>
 </head>
 <body>
 
-<!-- NAV DOTS -->
-<nav class="dots" id="dots"></nav>
+<div class="carousel-label">Carrusel Instagram · 8 slides · 1080×1920</div>
 
-<!-- SWIPE HINT -->
-<div class="swipe-hint" id="hint">
-  <span class="sh-arrow">↓</span> Desliza para explorar
+<!-- ─── SLIDE 1: PORTADA ─── -->
+<div class="slide s1">
+  <div class="bg-circle"></div>
+  <div class="bg-circle2"></div>
+  <div class="tag">Guía rápida · IA</div>
+  <div class="num">6</div>
+  <div class="title">
+    <div class="kimi">Kimi</div>
+    <div class="claw">Claw</div>
+    <div class="sub">Configúralo bien<br>desde el primer día</div>
+  </div>
+  <div class="badge">6 PASOS → SWIPE</div>
+  <div class="slide-num">1/8</div>
 </div>
 
-<div class="app" id="app">
+<!-- ─── SLIDE 2: PASO 1 ─── -->
+<div class="slide step-slide">
+  <div class="top-bar"><div class="top-bar-fill" style="width:16.6%"></div></div>
+  <div class="step-label">// paso 01</div>
+  <div class="step-big">01</div>
+  <div class="divider"></div>
+  <div class="step-title">Abre el<br>entorno oficial</div>
+  <div class="step-desc">
+    Ve directamente a<br>
+    <span style="color:#6c63ff">kimi.com/bot</span><br><br>
+    No uses mirrors ni páginas<br>
+    de terceros. El punto de<br>
+    entrada correcto ya es<br>
+    parte de la configuración.
+  </div>
+  <div class="tip-box">
+    <div class="tip-label">// cuidado</div>
+    <div class="tip-text">Si ves un instalador<br>o .exe → sitio equivocado</div>
+  </div>
+  <div class="slide-counter">2/8</div>
+</div>
 
-<!-- ══ S0: PORTADA ══ -->
-<section id="s0">
-  <div class="cover-bg"></div>
-  <div class="cover-grain"></div>
-  <div class="cover-content">
-    <div class="cover-eyebrow">Guía práctica · 2025</div>
-    <div class="cover-h">
-      Ingeniería<br>
-      <span>Agéntica</span>
+<!-- ─── SLIDE 3: PASO 2 ─── -->
+<div class="slide step-slide">
+  <div class="top-bar"><div class="top-bar-fill" style="width:33.2%"></div></div>
+  <div class="step-label">// paso 02</div>
+  <div class="step-big">02</div>
+  <div class="divider"></div>
+  <div class="step-title">Inicia sesión<br>primero</div>
+  <div class="step-desc">
+    El login no es opcional.<br><br>
+    Sin cuenta activa, tu<br>
+    configuración no persiste<br>
+    entre sesiones.<br><br>
+    Una sesión temporal = setup<br>
+    incompleto e inconsistente.
+  </div>
+  <div class="tip-box">
+    <div class="tip-label">// recuerda</div>
+    <div class="tip-text">Estado del agente, historial<br>y config → todo requiere login</div>
+  </div>
+  <div class="slide-counter">3/8</div>
+</div>
+
+<!-- ─── SLIDE 4: PASO 3 ─── -->
+<div class="slide step-slide">
+  <div class="top-bar"><div class="top-bar-fill" style="width:49.8%"></div></div>
+  <div class="step-label">// paso 03</div>
+  <div class="step-big">03</div>
+  <div class="divider"></div>
+  <div class="step-title">Elige la ruta<br>en la nube</div>
+  <div class="step-desc">
+    Kimi Claw es hosted.<br>
+    No necesitas servidores<br>
+    propios para empezar.<br><br>
+    Usa la ruta gestionada<br>
+    por defecto a menos que<br>
+    tengas una razón concreta.
+  </div>
+  <div class="tip-box">
+    <div class="tip-label">// regla</div>
+    <div class="tip-text">Cloud primero → local<br>solo para casos avanzados</div>
+  </div>
+  <div class="slide-counter">4/8</div>
+</div>
+
+<!-- ─── SLIDE 5: PASO 4 ─── -->
+<div class="slide step-slide">
+  <div class="top-bar"><div class="top-bar-fill" style="width:66.4%"></div></div>
+  <div class="step-label">// paso 04</div>
+  <div class="step-big">04</div>
+  <div class="divider"></div>
+  <div class="step-title">Crea el perfil<br>del agente</div>
+  <div class="step-desc">
+    Un perfil. Un rol.<br>
+    No sobre-configures de entrada.<br><br>
+    Buenos roles iniciales:<br>
+    <span style="color:#e8e8f0">→ Asistente de investigación</span><br>
+    <span style="color:#e8e8f0">→ Ayudante de planificación</span><br>
+    <span style="color:#e8e8f0">→ Soporte operativo ligero</span>
+  </div>
+  <div class="tip-box">
+    <div class="tip-label">// error común</div>
+    <div class="tip-text">Configurar todo el día 1<br>= no sabes qué falló</div>
+  </div>
+  <div class="slide-counter">5/8</div>
+</div>
+
+<!-- ─── SLIDE 6: PASO 5 ─── -->
+<div class="slide step-slide">
+  <div class="top-bar"><div class="top-bar-fill" style="width:83%"></div></div>
+  <div class="step-label">// paso 05</div>
+  <div class="step-big">05</div>
+  <div class="divider"></div>
+  <div class="step-title">Dale una<br>tarea real</div>
+  <div class="step-desc">
+    Prueba el setup con algo<br>
+    concreto desde el día 1.<br><br>
+    <span style="color:#e8e8f0">→ Resumir un documento</span><br>
+    <span style="color:#e8e8f0">→ Organizar notas</span><br>
+    <span style="color:#e8e8f0">→ Redactar un output corto</span><br><br>
+    Esto prueba que el setup<br>
+    funciona de verdad.
+  </div>
+  <div class="tip-box">
+    <div class="tip-label">// validación</div>
+    <div class="tip-text">Login exitoso ≠ setup correcto.<br>Solo una tarea real lo prueba.</div>
+  </div>
+  <div class="slide-counter">6/8</div>
+</div>
+
+<!-- ─── SLIDE 7: PASO 6 ─── -->
+<div class="slide step-slide">
+  <div class="top-bar"><div class="top-bar-fill" style="width:100%"></div></div>
+  <div class="step-label">// paso 06</div>
+  <div class="step-big">06</div>
+  <div class="divider"></div>
+  <div class="step-title">Expande solo<br>tras el éxito</div>
+  <div class="step-desc">
+    Cuando el primer flujo<br>
+    funcione de forma estable,<br>
+    entonces expande.<br><br>
+    La secuencia correcta:<br>
+    <span style="color:#6c63ff">login → agente → tarea<br>→ revisión → expansión</span>
+  </div>
+  <div class="tip-box">
+    <div class="tip-label">// clave</div>
+    <div class="tip-text">Juzga el producto con un<br>workflow real, no con ajustes.</div>
+  </div>
+  <div class="slide-counter">7/8</div>
+</div>
+
+<!-- ─── SLIDE 8: CHECKLIST ─── -->
+<div class="slide s8">
+  <div class="top-bar"></div>
+  <div class="label">// checklist final</div>
+  <div class="title">¿Está<br>listo?</div>
+  <div class="checks">
+    <div class="check">
+      <div class="check-box"></div>
+      <div class="check-text">Entorno oficial de Kimi abierto</div>
     </div>
-    <div class="cover-rule"></div>
-    <p class="cover-sub">Un equipo digital trabajando en paralelo mientras tú decides. Sin código. Sin complicaciones.</p>
-    <div class="cover-menu">
-      <div class="cover-item" onclick="scrollTo(1)">
-        <span class="ci-n">I</span><span class="ci-t">El cambio mental</span><span class="ci-arr">→</span>
-      </div>
-      <div class="cover-item" onclick="scrollTo(2)">
-        <span class="ci-n">II</span><span class="ci-t">Trabajar en paralelo</span><span class="ci-arr">→</span>
-      </div>
-      <div class="cover-item" onclick="scrollTo(3)">
-        <span class="ci-n">III</span><span class="ci-t">Los 5 tipos de agente</span><span class="ci-arr">→</span>
-      </div>
-      <div class="cover-item" onclick="scrollTo(4)">
-        <span class="ci-n">IV</span><span class="ci-t">Nivel techie</span><span class="ci-arr">→</span>
-      </div>
-      <div class="cover-item" onclick="scrollTo(5)">
-        <span class="ci-n">V</span><span class="ci-t">Tu guía para empezar</span><span class="ci-arr">→</span>
-      </div>
+    <div class="check">
+      <div class="check-box"></div>
+      <div class="check-text">Login completado y estable</div>
+    </div>
+    <div class="check">
+      <div class="check-box"></div>
+      <div class="check-text">Un agente hosted creado</div>
+    </div>
+    <div class="check">
+      <div class="check-box"></div>
+      <div class="check-text">Un workflow concreto probado</div>
+    </div>
+    <div class="check">
+      <div class="check-box"></div>
+      <div class="check-text">Output útil generado</div>
     </div>
   </div>
-</section>
-
-<!-- ══ S1: EL CAMBIO ══ -->
-<section id="s1">
-  <div class="s1-header">
-    <div class="s1-kicker">I — El cambio mental</div>
-    <div class="s1-h">De usar IA<br>a <em>dirigir</em> IA</div>
+  <div class="cta">
+    <div class="cta-line">guía completa en</div>
+    <div class="cta-url">progressiverobot.com</div>
   </div>
+</div>
 
-  <div class="compare-table">
-    <div class="ct-row">
-      <div class="ct-head">Antes</div>
-      <div class="ct-head">Ahora</div>
-    </div>
-    <div class="ct-row">
-      <div class="ct-cell">Abres una IA, preguntas, copias</div>
-      <div class="ct-cell new">Varias IAs trabajando a la vez</div>
-    </div>
-    <div class="ct-row">
-      <div class="ct-cell">Una tarea, una respuesta</div>
-      <div class="ct-cell new">Tú apruebas, ellas ejecutan</div>
-    </div>
-    <div class="ct-row">
-      <div class="ct-cell">Tú haces, la IA ayuda</div>
-      <div class="ct-cell new">La IA hace, tú decides</div>
-    </div>
-    <div class="ct-row">
-      <div class="ct-cell">Todo secuencial</div>
-      <div class="ct-cell new">Todo simultáneo</div>
-    </div>
-  </div>
-
-  <div class="callout">
-    <div class="callout-icon">💡</div>
-    <div class="callout-text">
-      <strong>El ordenador deja de ser una herramienta.</strong> Se convierte en un equipo digital que trabaja mientras tú tomas las decisiones importantes.
-    </div>
-  </div>
-</section>
-
-<!-- ══ S2: PANTALLAS ══ -->
-<section id="s2">
-  <div class="sec-num">II — Trabajar en paralelo</div>
-  <div class="s2-h">Tres pantallas,<br><em>tres agentes</em></div>
-  <p class="s2-sub">Esto es ingeniería agéntica en el día a día. Sin automatizaciones. Sin código.</p>
-
-  <div class="mock-screen">
-    <div class="ms-bar">
-      <div class="ms-dot" style="background:#ff5f57;"></div>
-      <div class="ms-dot" style="background:#febc2e;"></div>
-      <div class="ms-dot" style="background:#28c840;"></div>
-      <div class="ms-title" style="color:#60a5fa;">Claude for Chrome</div>
-      <div class="ms-badge badge-busy">Trabajando</div>
-    </div>
-    <div class="ms-body">
-      <div class="ms-msg">"Descargando informes PDF del portal..."</div>
-      <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,0.25);margin-bottom:5px;"><span>Progreso</span><span>65%</span></div>
-      <div class="ms-bar-track"><div class="ms-bar-fill" style="width:65%;background:#60a5fa;"></div></div>
-    </div>
-  </div>
-
-  <div class="mock-screen">
-    <div class="ms-bar">
-      <div class="ms-dot" style="background:#ff5f57;"></div>
-      <div class="ms-dot" style="background:#febc2e;"></div>
-      <div class="ms-dot" style="background:#28c840;"></div>
-      <div class="ms-title" style="color:#4ade80;">Gemini Gem</div>
-      <div class="ms-badge badge-busy">Redactando</div>
-    </div>
-    <div class="ms-body">
-      <div class="ms-msg">"Estimado Juan, en respuesta a..."</div>
-      <div class="ms-tags">
-        <div class="ms-tag" style="background:rgba(74,222,128,0.1);color:#4ade80;">Email 1 ✓</div>
-        <div class="ms-tag" style="background:rgba(74,222,128,0.1);color:#4ade80;">Email 2 ✓</div>
-        <div class="ms-tag" style="background:rgba(251,191,36,0.1);color:#fbbf24;">Email 3...</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="mock-screen">
-    <div class="ms-bar">
-      <div class="ms-dot" style="background:#ff5f57;"></div>
-      <div class="ms-dot" style="background:#febc2e;"></div>
-      <div class="ms-dot" style="background:#28c840;"></div>
-      <div class="ms-title" style="color:#c084fc;">Claude web</div>
-      <div class="ms-badge badge-ok">Listo ✓</div>
-    </div>
-    <div class="ms-body">
-      <div class="ms-msg">"Informe Q1 generado y listo para revisar"</div>
-      <div class="ms-tags">
-        <div class="ms-tag" style="background:rgba(74,222,128,0.1);color:#4ade80;">Word.docx ✓</div>
-        <div class="ms-tag" style="background:rgba(74,222,128,0.1);color:#4ade80;">Excel.xlsx ✓</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="you-node">
-    <div class="yn-icon">🧠</div>
-    <div class="yn-text">Los tres trabajan a la vez. <strong>Tú solo supervisas y apruebas.</strong> Eso es todo.</div>
-  </div>
-</section>
-
-<!-- ══ S3: 5 AGENTES ══ -->
-<section id="s3">
-  <div class="sec-num">III — Los 5 tipos de agente</div>
-  <div class="s3-h">Los roles que usan<br>las <em>mejores empresas</em></div>
-
-  <div class="agents">
-    <div class="agent-row">
-      <div class="ar-icon" style="background:#dbeafe;">🔍</div>
-      <div><div class="ar-name">Researcher</div><div class="ar-desc">Busca, filtra y sintetiza información</div></div>
-      <div class="ar-tag" style="background:#dbeafe;color:#1e40af;">Investiga</div>
-    </div>
-    <div class="agent-row">
-      <div class="ar-icon" style="background:#fef3c7;">🗺</div>
-      <div><div class="ar-name">Planner</div><div class="ar-desc">Diseña el plan y divide el trabajo</div></div>
-      <div class="ar-tag" style="background:#fef3c7;color:#92400e;">Planifica</div>
-    </div>
-    <div class="agent-row">
-      <div class="ar-icon" style="background:#dcfce7;">⚡</div>
-      <div><div class="ar-name">Executor</div><div class="ar-desc">Escribe, genera y publica</div></div>
-      <div class="ar-tag" style="background:#dcfce7;color:#166534;">Ejecuta</div>
-    </div>
-    <div class="agent-row">
-      <div class="ar-icon" style="background:#fee2e2;">🔎</div>
-      <div><div class="ar-name">Critic</div><div class="ar-desc">Revisa errores y mejora el resultado</div></div>
-      <div class="ar-tag" style="background:#fee2e2;color:#991b1b;">Revisa</div>
-    </div>
-    <div class="agent-row">
-      <div class="ar-icon" style="background:#ede9fe;">🔧</div>
-      <div><div class="ar-name">Operator</div><div class="ar-desc">Conecta apps y mueve datos</div></div>
-      <div class="ar-tag" style="background:#ede9fe;color:#5b21b6;">Conecta</div>
-    </div>
-  </div>
-
-  <div class="flow-visual">
-    <div class="fv-label">Ejemplo — publicar un artículo</div>
-    <div class="fv-chain">
-      <div class="fv-step"><div class="fv-dot" style="background:var(--b);"></div><div class="fv-role" style="color:var(--b);">Researcher</div><div class="fv-action">Busca tendencias</div></div>
-      <div class="fv-step"><div class="fv-dot" style="background:var(--a);"></div><div class="fv-role" style="color:var(--a);">Planner</div><div class="fv-action">Estructura el artículo</div></div>
-      <div class="fv-step"><div class="fv-dot" style="background:var(--g);"></div><div class="fv-role" style="color:var(--g);">Executor</div><div class="fv-action">Redacta el contenido</div></div>
-      <div class="fv-step"><div class="fv-dot" style="background:var(--r);"></div><div class="fv-role" style="color:var(--r);">Critic</div><div class="fv-action">Revisa tono y errores</div></div>
-      <div class="fv-step"><div class="fv-dot" style="background:var(--p);"></div><div class="fv-role" style="color:var(--p);">Operator</div><div class="fv-action">Publica automáticamente</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ══ S4: TECHIE ══ -->
-<section id="s4">
-  <div class="sec-num" style="color:rgba(255,255,255,0.25);">IV — Nivel techie</div>
-  <div class="s4-h">Para los que<br>quieren ir <em>más lejos</em></div>
-  <p class="s4-sub">Herramientas para quienes quieren potencia real.</p>
-
-  <div class="tool-hero">
-    <div class="th-tag">★ Más potente</div>
-    <div class="th-name">Claude Code</div>
-    <div class="th-desc">Agente autónomo desde la terminal. Crea, edita y despliega proyectos completos solo.</div>
-    <div class="th-grid">
-      <div class="th-feat"><div class="th-ft">Proyectos enteros</div><div class="th-fd">Escribe y despliega desde un prompt</div></div>
-      <div class="th-feat"><div class="th-ft">Lee tu código</div><div class="th-fd">Entiende y modifica directamente</div></div>
-      <div class="th-feat"><div class="th-ft">Terminal real</div><div class="th-fd">Instala, corre comandos, gestiona</div></div>
-      <div class="th-feat"><div class="th-ft">Autónomo</div><div class="th-fd">Planifica, ejecuta y corrige solo</div></div>
-    </div>
-  </div>
-
-  <div class="tool-cards">
-    <div class="tool-card">
-      <div class="tc-icon">⚙️</div>
-      <div>
-        <div class="tc-name">n8n</div>
-        <div class="tc-level">Máximo control · self-hosted</div>
-        <div class="tc-items">
-          <div class="tc-item">Flujos visuales sin límites</div>
-          <div class="tc-item">JavaScript dentro del flujo</div>
-          <div class="tc-item">Tus datos, tu servidor</div>
-        </div>
-      </div>
-    </div>
-    <div class="tool-card">
-      <div class="tc-icon">🔗</div>
-      <div>
-        <div class="tc-name">Zapier / Make</div>
-        <div class="tc-level">Sin código · rápido de montar</div>
-        <div class="tc-items">
-          <div class="tc-item">Conectan IA con Gmail, Slack, CRM</div>
-          <div class="tc-item">Make — más potente y visual</div>
-          <div class="tc-item">Email entra → IA resume → CRM</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══ S5: GUÍA ══ -->
-<section id="s5">
-  <div class="sec-num">V — Tu guía para empezar</div>
-  <div class="s5-h">Empieza <em>hoy</em><br>en 10 minutos</div>
-  <p class="s5-sub">Elige tu perfil y marca los pasos.</p>
-
-  <div class="profile-row">
-    <button class="ptab on" onclick="switchP(0,this)">Cualquiera</button>
-    <button class="ptab" onclick="switchP(1,this)">Empresa</button>
-    <button class="ptab" onclick="switchP(2,this)">Freelancer</button>
-    <button class="ptab" onclick="switchP(3,this)">Marketing</button>
-  </div>
-
-  <!-- P0 -->
-  <div class="panel on" id="p0">
-    <div class="prog-bar-wrap">
-      <div class="pbw-top"><span class="pbw-label">Progreso</span><span class="pbw-count" id="c0">0 / 5</span></div>
-      <div class="pbw-track"><div class="pbw-fill" id="f0" style="width:0"></div></div>
-    </div>
-    <div class="steps">
-      <div class="step" onclick="tick(this,'f0','c0',5)">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <div class="step-title">Instala Claude for Chrome</div>
-          <div class="step-desc">Chrome Web Store → añadir extensión. Gratis, sin configuración.</div>
-          <div class="step-tool" style="background:#dbeafe;color:#1e40af;">Chrome Web Store</div>
-        </div>
-      </div>
-      <div class="step" onclick="tick(this,'f0','c0',5)">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <div class="step-title">Crea un Proyecto en Claude.ai</div>
-          <div class="step-desc">Guarda contexto permanente. Añade quién eres y qué haces.</div>
-          <div class="step-tool" style="background:#ede9fe;color:#5b21b6;">Claude Projects</div>
-        </div>
-      </div>
-      <div class="step" onclick="tick(this,'f0','c0',5)">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <div class="step-title">Identifica tu tarea más repetitiva</div>
-          <div class="step-desc">¿Qué haces más de 3 veces por semana? Ese es tu primer agente.</div>
-          <div class="step-tool" style="background:#fef3c7;color:#92400e;">Reflexión</div>
-        </div>
-      </div>
-      <div class="step" onclick="tick(this,'f0','c0',5)">
-        <div class="step-num">4</div>
-        <div class="step-body">
-          <div class="step-title">Configura un Gem en Gemini para emails</div>
-          <div class="step-desc">gemini.google.com → Gems → nuevo Gem con tu tono habitual.</div>
-          <div class="step-tool" style="background:#dcfce7;color:#166534;">Gemini Gems</div>
-        </div>
-      </div>
-      <div class="step" onclick="tick(this,'f0','c0',5)">
-        <div class="step-num">5</div>
-        <div class="step-body">
-          <div class="step-title">Trabaja con 2 pantallas a la vez</div>
-          <div class="step-desc">Claude en una, Gemini en otra. Tareas distintas al mismo tiempo. Bienvenido.</div>
-          <div class="step-tool" style="background:#fee2e2;color:#991b1b;">Primer día</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- P1 -->
-  <div class="panel" id="p1">
-    <div class="prog-bar-wrap">
-      <div class="pbw-top"><span class="pbw-label">Progreso</span><span class="pbw-count" id="c1">0 / 5</span></div>
-      <div class="pbw-track"><div class="pbw-fill" id="f1" style="width:0"></div></div>
-    </div>
-    <div class="steps">
-      <div class="step" onclick="tick(this,'f1','c1',5)">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <div class="step-title">Mapea los flujos repetitivos del equipo</div>
-          <div class="step-desc">Lista las 5 tareas que más tiempo consumen. Son tus primeros candidatos.</div>
-          <div class="step-tool" style="background:#dbeafe;color:#1e40af;">Estrategia</div>
-        </div>
-      </div>
-      <div class="step" onclick="tick(this,'f1','c1',5)">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <div class="step-title">Crea un Claude Project por departamento</div>
-          <div class="step-desc">Ventas, marketing, ops — cada uno con su contexto y datos propios.</div>
-          <div class="step-tool" style="background:#ede9fe;color:#5b21b6;">Claude Projects</div>
-        </div>
-      </div>
-      <div class="step" onclick="tick(this,'f1','c1',5)">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <div class="step-title">Conecta Gmail con Make o Zapier</div>
-          <div class="step-desc">Primer flujo: email entra → Claude resume → borrador listo para aprobar.</div>
-          <div class="step-tool" style="background:#fef3c7;color:#92400e;">Make / Zapier</div>
-        </div>
-      </div>
-      <div class="step" onclick="tick(this,'f1','c1',5)">
-        <div class="step-num">4</div>
-        <div class="step-body">
-          <div class="step-title">Designa un supervisor de agentes</div>
-          <div class="step-desc">Alguien que valide outputs antes de que salgan al exterior. La gobernanza es clave.</div>
-          <div class="step-tool" style="background:#dcfce7;color:#166534;">Equipo</div>
-        </div>
-      </div>
-      <div class="step" onclick="tick(this,'f1','c1',5)">
-        <div class="step-num">5</div>
-        <div class="step-body">
-          <div class="step-title">Mide el tiempo ahorrado la primera semana</div>
-          <div class="step-desc">Ese número es tu argumento para escalar el sistema a toda la empresa.</div>
-          <div class="step-tool" style="background:#fee2e2;color:#991b1b;">Métricas</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- P2 -->
-  <div class="panel" id="p2">
-    <div class="prog-bar-wrap">
-      <div class="pbw-top"><span class="pbw-label">Progreso</span><span class="pbw-count" id="c2">0 / 5</span></div>
-      <div class="pbw-track"><div class="pbw-fill" id="f2" style="width:0"></div></div>
-    </div>
-    <div class="steps">
-      <div class="step" onclick="tick(this,'f2','c2',5)">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <div class="step-title">Un Project en Claude por cada cliente</div>
-          <div class="step-desc">Sube briefing, tono y materiales. Claude los recordará siempre.</div>
-          <div class="step-tool" style="background:#ede9fe;color:#5b21b6;">Claude Projects</div>
-        </div>
-      </div>
-      <div class="step" onclick="tick(this,'f2','c2',5)">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <div class="step-title">Automatiza propuestas y presupuestos</div>
-          <div class="step-desc">Prompt plantilla que genera borradores en 30 segundos desde tus notas.</div>
-          <div class="step-tool" style="background:#dbeafe;color:#1e40af;">Plantillas</div>
-        </div>
-      </div>
-      <div class="step" onclick="tick(this,'f2','c2',5)">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <div class="step-title">Chrome Agent para investigar clientes</div>
-          <div class="step-desc">Antes de una reunión: navega su web y prepara un briefing de 5 puntos.</div>
-          <div class="step-tool" style="background:#dcfce7;color:#166534;">Chrome Agent</div>
-        </div>
-      </div>
-      <div class="step" onclick="tick(this,'f2','c2',5)">
-        <div class="step-num">4</div>
-        <div class="step-body">
-          <div class="step-title">Delega los informes de seguimiento</div>
-          <div class="step-desc">Notas de la semana → Claude genera el informe para el cliente automáticamente.</div>
-          <div class="step-tool" style="background:#fef3c7;color:#92400e;">Reportes</div>
-        </div>
-      </div>
-      <div class="step" onclick="tick(this,'f2','c2',5)">
-        <div class="step-num">5</div>
-        <div class="step-body">
-          <div class="step-title">Calcula cuántos clientes más puedes gestionar</div>
-          <div class="step-desc">Con el tiempo liberado, estima proyectos adicionales. Ese es el valor real.</div>
-          <div class="step-tool" style="background:#fee2e2;color:#991b1b;">Escalabilidad</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- P3 -->
-  <div class="panel" id="p3">
-    <div class="prog-bar-wrap">
-      <div class="pbw-top"><span class="pbw-label">Progreso</span><span class="pbw-count" id="c3">0 / 5</span></div>
-      <div class="pbw-track"><div class="pbw-fill" id="f3" style="width:0"></div></div>
-    </div>
-    <div class="steps">
-      <div class="step" onclick="tick(this,'f3','c3',5)">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <div class="step-title">Crea tu agente Researcher de tendencias</div>
-          <div class="step-desc">Project en Claude para buscar tendencias semanales y resumirlas en 5 puntos.</div>
-          <div class="step-tool" style="background:#dbeafe;color:#1e40af;">Researcher</div>
-        </div>
-      </div>
-      <div class="step" onclick="tick(this,'f3','c3',5)">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <div class="step-title">Monta el flujo de contenido en 5 agentes</div>
-          <div class="step-desc">Researcher → Planner → Executor → Critic → Operator. Tú apruebas entre pasos.</div>
-          <div class="step-tool" style="background:#ede9fe;color:#5b21b6;">Sistema</div>
-        </div>
-      </div>
-      <div class="step" onclick="tick(this,'f3','c3',5)">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <div class="step-title">Conecta tu blog con Make</div>
-          <div class="step-desc">Claude genera → Make formatea → publica en WordPress/LinkedIn automáticamente.</div>
-          <div class="step-tool" style="background:#fef3c7;color:#92400e;">Make</div>
-        </div>
-      </div>
-      <div class="step" onclick="tick(this,'f3','c3',5)">
-        <div class="step-num">4</div>
-        <div class="step-body">
-          <div class="step-title">Gem para adaptar formatos</div>
-          <div class="step-desc">Un artículo largo → hilo de Twitter + post LinkedIn + newsletter. Un input, tres outputs.</div>
-          <div class="step-tool" style="background:#dcfce7;color:#166534;">Gemini Gems</div>
-        </div>
-      </div>
-      <div class="step" onclick="tick(this,'f3','c3',5)">
-        <div class="step-num">5</div>
-        <div class="step-body">
-          <div class="step-title">Mide piezas publicadas antes vs. ahora</div>
-          <div class="step-desc">Ese multiplicador es tu argumento para escalar el sistema.</div>
-          <div class="step-tool" style="background:#fee2e2;color:#991b1b;">Métricas</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</section>
-
-</div><!-- /app -->
-
-<script>
-// DOTS
-const sections = ['s0','s1','s2','s3','s4','s5'];
-const dotsEl = document.getElementById('dots');
-sections.forEach((_,i)=>{
-  const d = document.createElement('div');
-  d.className='dot'+(i===0?' on':'');
-  d.onclick=()=>scrollTo(i);
-  dotsEl.appendChild(d);
-});
-
-function scrollTo(i){
-  document.getElementById(sections[i]).scrollIntoView({behavior:'smooth'});
-}
-
-// Update dots on scroll
-const app = document.getElementById('app');
-const allDots = dotsEl.querySelectorAll('.dot');
-const hint = document.getElementById('hint');
-let hintHidden = false;
-
-app.addEventListener('scroll',()=>{
-  if(!hintHidden){ hint.classList.add('hide'); hintHidden=true; }
-  const h = window.innerHeight;
-  let active = 0;
-  sections.forEach((id,i)=>{
-    const el = document.getElementById(id);
-    const top = el.getBoundingClientRect().top;
-    if(top < h*0.5) active = i;
-  });
-  allDots.forEach((d,i)=>d.classList.toggle('on',i===active));
-},{passive:true});
-
-// PROFILE TABS
-let curP = 0;
-function switchP(n, btn){
-  document.getElementById('p'+curP).classList.remove('on');
-  curP = n;
-  document.getElementById('p'+n).classList.add('on');
-  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('on'));
-  btn.classList.add('on');
-}
-
-// CHECKLIST
-function tick(el, fillId, countId, total){
-  el.classList.toggle('done');
-  const panel = el.closest('.panel');
-  const done = panel.querySelectorAll('.step.done').length;
-  document.getElementById(countId).textContent = done+' / '+total;
-  document.getElementById(fillId).style.width = (done/total*100)+'%';
-}
-</script>
 </body>
 </html>
